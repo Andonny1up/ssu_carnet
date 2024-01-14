@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+        
+        {% endblock title %}
+    </title>
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="{% static 'admin_ssu/bootstrap/css/bootstrap.min.css' %}">
+    <!-- Font awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- reference CSS file -->
+    <style>
+        .offcanvas-body{
+            padding: 0;
+            {% comment %} background-color: gray; {% endcomment %}
+        }
+        .nav-item{
+            width: 100%;
+        }
+        .nav-link{
+            font-size: 1.2rem;
+            padding: 0.5rem 1.2rem;
+        }
+        .nav-link:hover{
+            {% comment %} background-color: #f8f9fa;#0D6EFD {% endcomment %}
+            background-image: linear-gradient(to right, #1270fd, #2179fd);
+            color: #fff;
+        }
+        .nav-link i{
+            font-size: 1.5rem;
+            padding-right: 0.5rem;
+        }
+        .dropdown-menu {
+            padding: 0;
+
+            background-color: #0262f2;
+            border: none;
+        }
+        .dropdown-item{
+            font-size: 1.2rem;
+            padding: 0.5rem 1.2rem;
+            padding-left: 2.5rem;
+        }
+        .dropdown-item:hover{
+            {% comment %} background-color: #f8f9fa;#0D6EFD {% endcomment %}
+            background-image: linear-gradient(to right, #1270fd, #2179fd);
+            color: #fff;
+        }
+
+    </style>
+    {% block css %}
+    
+    {% endblock css %}
+</head>
+<body>
+    <header>
+        {% include "admin_ssu/layouts/header.html" %}
+    </header>
+    <main>
+        {% block content %}
+        
+        {% endblock content %}
+    </main>
+    <footer>
+
+    </footer>
+    <script src="{% static 'admin_ssu/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    {% block js %}
+    
+    {% endblock js %}
+</body>
+</html>

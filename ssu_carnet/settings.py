@@ -45,7 +45,7 @@ THIRD_APPS = [
     
 ]
 LOCAL_APPS = [
-    
+    'admin_ssu.apps.AdminSsuConfig',
 ]
 
 
@@ -66,7 +66,7 @@ ROOT_URLCONF = 'ssu_carnet.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR/'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -145,3 +145,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# login redirect
+LOGIN_URL = 'admin_ssu:login'
+LOGIN_REDIRECT_URL = 'admin_ssu:home'
+LOGOUT_REDIRECT_URL = 'admin_ssu:login'
