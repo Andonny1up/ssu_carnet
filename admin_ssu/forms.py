@@ -1,8 +1,9 @@
 # forms.py
 
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth.models import User,Group
 from collections import OrderedDict
 
 User = get_user_model()
@@ -39,3 +40,22 @@ class EmailAuthenticationForm(AuthenticationForm):
             self.user_cache = user
 
         return self.cleaned_data
+    
+    
+class CustomUserCreationForm(UserCreationForm):
+    first_name = forms.CharField(max_length=30, required=True, help_text='Required.')
+    last_name = forms.CharField(max_length=30, required=True, help_text='Required.')
+    is_superuser = forms.BooleanField(required=False)
+    groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(), required=False)
+    email = forms.EmailField(required=False)
+
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name','email', 'password1', 'password2','is_superuser' )
+        
+
+class CustomUserEditForm(UserChangeForm):
+
+    class Meta(UserChangeForm.Meta):
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email', 'groups', 'is_superuser','is_active')

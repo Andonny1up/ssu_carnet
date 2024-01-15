@@ -11,4 +11,10 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     
     # path('accounts/', include('django.contrib.auth.urls')),  # include other auth urls
+
+    # Usuarios
+    path('users/', views.UserListView.as_view(), name='user_view'),
+    path('user-search/', views.UserSearchView.as_view(), name='user-search'),
+    path('users/create/', views.UserCreateView.as_view(), name='user_create'),
+    path('user/edit/<int:pk>/', views.UserEditView.as_view(), name='user_edit'),
 ]
