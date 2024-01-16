@@ -78,12 +78,12 @@ class GroupForm(forms.ModelForm):
         model = Group
         fields = ['name', 'permissions']
         
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        content_types = ContentType.objects.all().order_by('model')
-        choices = []
-        for content_type in content_types:
-            permissions_of_model = Permission.objects.filter(content_type=content_type)
-            if permissions_of_model:
-                choices.append([f'{content_type.app_label} | {content_type.model}', permissions_of_model])
-        self.fields['permissions'].choices = choices
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     content_types = ContentType.objects.all().order_by('model')
+    #     choices = []
+    #     for content_type in content_types:
+    #         permissions_of_model = Permission.objects.filter(content_type=content_type)
+    #         if permissions_of_model:
+    #             choices.append([f'{content_type.app_label} | {content_type.model}', permissions_of_model])
+    #     self.fields['permissions'].choices = choices
