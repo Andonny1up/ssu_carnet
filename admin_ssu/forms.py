@@ -43,19 +43,24 @@ class EmailAuthenticationForm(AuthenticationForm):
     
     
 class CustomUserCreationForm(UserCreationForm):
-    first_name = forms.CharField(max_length=30, required=True, help_text='Required.')
-    last_name = forms.CharField(max_length=30, required=True, help_text='Required.')
-    is_superuser = forms.BooleanField(required=False)
-    groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(), required=False)
+    first_name = forms.CharField(max_length=30, required=True, help_text='Requerido.', label="Nombre")
+    last_name = forms.CharField(max_length=30, required=True, help_text='Requerido.',label="Apellidos")
+    is_superuser = forms.BooleanField(required=False,label="Hacer Admin")
+    groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(), required=False, label="Grupos")
     email = forms.EmailField(required=False)
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name','email', 'password1', 'password2','is_superuser' )
+        fields = ('username', 'first_name', 'last_name','email', 'password1', 'password2','groups','is_superuser' )
         
 
 class CustomUserEditForm(UserChangeForm):
-
+    def __init__(self, *args, **kwargs):
+        super(CustomUserEditForm, self).__init__(*args, **kwargs)
+        del self.fields['password']
+        self.fields['is_superuser'].label = "Es admin"
+        self.fields['email'].label = "Email"
+        
     class Meta(UserChangeForm.Meta):
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'groups', 'is_superuser','is_active')

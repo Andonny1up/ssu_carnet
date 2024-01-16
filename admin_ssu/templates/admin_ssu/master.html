@@ -68,6 +68,25 @@
             background-color: var(--danger-color-10);
             color: var(--ligth-color);
         }
+        .my-btn-danger{
+            background-color: var(--danger-color);
+            color: var(--ligth-color);
+            {% comment %} border-radius: 0.2rem; {% endcomment %}
+        }
+        .my-btn-danger:hover{
+            background-color: var(--danger-color-10);
+            color: var(--ligth-color);
+        }
+        .my-bg-danger{
+            background-color: var(--danger-color);
+            color: var(--ligth-color);
+        }
+        .btn-gray{
+            background-color: var(--gray-color);
+        }
+        .btn-gray:hover{
+            background-color: var(--gray-color);
+        }
         .offcanvas-body{
             padding: 0;
             {% comment %} background-color: gray; {% endcomment %}
@@ -130,6 +149,13 @@
         }
         .hidden{
             display: none;
+        }
+        /* Error list */
+        .errorlist{
+            padding: 0.2rem 1rem;
+            background-color: #F8D7DA;
+            border: 0.1rem solid #F1AEB5;
+            border-radius: 0.5rem;
         }
     </style>
     {% block css %}

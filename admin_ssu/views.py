@@ -19,8 +19,8 @@ from django.db.models.functions import Concat
 # views
 from django.contrib.auth.views import LoginView
 from django.views import View
-from django.views.generic import ListView
-from django.views.generic.edit import CreateView,UpdateView
+from django.views.generic import ListView, DetailView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from django.urls import reverse_lazy
 # Create your views here.
@@ -84,3 +84,17 @@ class UserEditView(LoginRequiredMixin, UpdateView):
     # form_class = UserChangeForm
     template_name = 'admin_ssu/users/user_edit.html'
     success_url = reverse_lazy('admin_ssu:user_view')
+    
+
+class UserDeleteView(LoginRequiredMixin, DeleteView):
+    model = User
+    # template_name = 'admin_ssu/users/user_confirm_delete.html'
+    success_url = reverse_lazy('admin_ssu:user_view')
+    
+
+class UserDetailView(DetailView):
+    model = User
+    template_name = 'admin_ssu/users/user_detail.html'
+    context_object_name = 'user'
+    
+#fin usuarios
