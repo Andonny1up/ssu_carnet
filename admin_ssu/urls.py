@@ -19,4 +19,8 @@ urlpatterns = [
     path('users/edit/<int:pk>/', views.UserEditView.as_view(), name='user_edit'),
     path('users/delete_user/<int:pk>/', views.UserDeleteView.as_view(), name='delete_user'),
     path('users/detail/<int:pk>/', views.UserDetailView.as_view(), name='user_detail'),
+    # Grupos
+    path('groups/', views.GroupListView.as_view(), name='group_list'),
+    path('groups/create/', views.GroupCreateView.as_view(), name='group_create'),
+    path('groups/edit/<int:pk>/', views.GroupUpdateView.as_view(), name='group_edit'),
 ]

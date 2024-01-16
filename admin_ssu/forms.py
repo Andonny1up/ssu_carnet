@@ -3,8 +3,9 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django.contrib.auth import get_user_model, authenticate
-from django.contrib.auth.models import User,Group
+from django.contrib.auth.models import User, Group, Permission
 from collections import OrderedDict
+from django.contrib.contenttypes.models import ContentType
 
 User = get_user_model()
 
@@ -64,3 +65,25 @@ class CustomUserEditForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'groups', 'is_superuser','is_active')
+        
+        
+class GroupForm(forms.ModelForm):
+    permissions = forms.ModelMultipleChoiceField(
+        queryset=Permission.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="Permisos"
+    )
+    class Meta:
+        model = Group
+        fields = ['name', 'permissions']
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        content_types = ContentType.objects.all().order_by('model')
+        choices = []
+        for content_type in content_types:
+            permissions_of_model = Permission.objects.filter(content_type=content_type)
+            if permissions_of_model:
+                choices.append([f'{content_type.app_label} | {content_type.model}', permissions_of_model])
+        self.fields['permissions'].choices = choices
