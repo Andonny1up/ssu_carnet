@@ -24,4 +24,7 @@ urlpatterns = [
     path('groups/create/', views.GroupCreateView.as_view(), name='group_create'),
     path('groups/edit/<int:pk>/', views.GroupUpdateView.as_view(), name='group_edit'),
     path('groups/delete/<int:pk>/', views.GroupDeleteView.as_view(), name='group_delete'),
+
+    # links to beneficiaries_ssu
+    path('', include('beneficiaries_ssu.urls')),
 ]

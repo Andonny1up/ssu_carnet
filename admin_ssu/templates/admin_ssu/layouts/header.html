@@ -57,6 +57,30 @@
                             <i class="fa fa-home"></i>Inicio
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin_ssu:bene_ssu:b_list' %}">
+                            <i class="fa fa-user-plus"></i>Beneficiarios
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin_ssu:home' %}">
+                            <i class="fa fa-drivers-license-o"></i>Carnets Beneficiarios
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-sliders"></i> Opcion Beneficiarios
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% if perms.beneficiaries_ssu.view_typebeneficiary %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'admin_ssu:bene_ssu:type_b_list' %}">
+                                    <i class="fa fa-group"></i> Tipos Beneficiarios
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </li>
                     {% if perms.auth.view_user %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">

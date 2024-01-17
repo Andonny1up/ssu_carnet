@@ -1,0 +1,174 @@
+{% extends "admin_ssu/master.html" %}
+{% block title %} {{ title }} {% endblock title %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1 class="heading">
+                <i class="fa fa-group"></i> {{ title }}
+            </h1>
+        </div>
+    </div>
+    <form class="row" method="post" enctype="multipart/form-data">
+        <div class="col-12 col-md-5 col-lg-4 order-md-2 mb-2">
+            <div class="card">
+                <div class="card-body p-5">
+                    <div class="row">
+                        <div class="col">
+                            <div class="d-flex justify-content-center">
+                                <img src="{{ request.scheme }}://{{ request.get_host }}{{ form.photo.value.url }}" alt="" class="img-fluid">
+                            </div>
+                            <p>
+                                {{ form.photo.label_tag }} {{ form.photo }}
+                                {{ form.photo.errors }}
+                                {% if form.photo.help_text %}
+                                    <span class="form-text text-muted">{{ form.photo.help_text }}</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card">
+                <div class="card-body p-5">
+                    <div class="form-template">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            {% if field.field.widget.input_type == 'checkbox'  %}
+                                {{ field.errors }}
+                                <p>    
+                                    {{ field.label_tag }}
+                                    <label class="switch">
+                                        {{ field }}
+                                        <span class="slider"></span>
+                                    </label>
+                                </p>
+                            {% else %}
+                                {% if not field is form.photo %}
+                                <p>
+                                    {{ field.label_tag }} {{ field }}
+                                    {{ field.errors }}
+                                    {% if field.help_text %}
+                                        <span class="form-text text-muted">{{ field.help_text }}</span>
+                                    {% endif %}
+                                </p>
+                                {% endif %}
+                            {% endif %}
+                            
+                        {% endfor %}
+                        {% comment %} {{ form.as_p }} {% endcomment %}
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+  
+{% endblock %}
+{% block css %}
+<style>
+.form-template p{
+
+}
+.form-template p label{
+    display: block;
+    font-weight: bold;
+}
+.form-template p input[type='text'], .form-template p input[type='email'], .form-template p input[type='password']{
+    width: 100%;
+    padding: 0.2rem;
+    border: 0.1rem solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+.form-template p span{
+    padding-left: 0.5rem;
+}
+.form-template p select{
+    width: 100%;
+    padding: 0.2rem;
+    border: 0.1rem solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+
+}
+div.d-flex img{
+    border-radius: 0.2rem;
+}
+ul{}
+ul li{
+    font-size: 0.8rem;
+
+    list-style: none;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>
+{% endblock css %}
