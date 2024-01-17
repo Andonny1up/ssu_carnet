@@ -46,6 +46,7 @@ THIRD_APPS = [
 ]
 LOCAL_APPS = [
     'admin_ssu.apps.AdminSsuConfig',
+    'beneficiaries_ssu.apps.BeneficiariesSsuConfig',
 ]
 
 

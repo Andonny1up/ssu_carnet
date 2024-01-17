@@ -14,8 +14,8 @@
                 <div class="card-body p-5">
                     <form class="form-user" method="post">
                         {% csrf_token %}
-                        {{ form.as_p }}
-                        {% comment %} <p>
+                        {% comment %} {{ form.as_p }} {% endcomment %}
+                        <p>
                           <label for="">Nombre</label>
                           {{ form.name }}
                         </p>
@@ -30,7 +30,7 @@
                                     </label>
                                 </div>
                             {% endfor %}
-                        {% endfor %} {% endcomment %}
+                        {% endfor %}
                         <div class="d-flex justify-content-end">
                             <button type="submit" class="btn btn-primary">Guardar</button>
                         </div>

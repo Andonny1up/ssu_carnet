@@ -48,7 +48,7 @@ class UserListView(LoginRequiredMixin, ListView):
     model = User
     template_name = 'admin_ssu/users/user_list.html'
     context_object_name = 'users'
-    paginate_by = 10
+    paginate_by = 1
     
     def get_queryset(self):
         return User.objects.all().order_by('-date_joined')
@@ -117,13 +117,13 @@ class GroupCreateView(LoginRequiredMixin,CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        # content_types = ContentType.objects.all().order_by('model')
-        # permissions_by_group = []
-        # for content_type in content_types:
-        #     permissions_of_model = Permission.objects.filter(content_type=content_type)
-        #     if permissions_of_model:
-        #         permissions_by_group.append((content_type, permissions_of_model))
-        # context['permissions_by_group'] = permissions_by_group
+        content_types = ContentType.objects.all().order_by('model')
+        permissions_by_group = []
+        for content_type in content_types:
+            permissions_of_model = Permission.objects.filter(content_type=content_type)
+            if permissions_of_model:
+                permissions_by_group.append((content_type, permissions_of_model))
+        context['permissions_by_group'] = permissions_by_group
         
         context['action'] = 'Crear'
         return context
@@ -138,14 +138,14 @@ class GroupUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        # content_types = ContentType.objects.all().order_by('model')
-        # permissions_by_group = []
-        # for content_type in content_types:
-        #     permissions_of_model = Permission.objects.filter(content_type=content_type)
-        #     if permissions_of_model:
-        #         permissions_by_group.append((content_type, permissions_of_model))
-        # context['permissions_by_group'] = permissions_by_group
-        # context['group_permissions'] = self.object.permissions.all()
+        content_types = ContentType.objects.all().order_by('model')
+        permissions_by_group = []
+        for content_type in content_types:
+            permissions_of_model = Permission.objects.filter(content_type=content_type)
+            if permissions_of_model:
+                permissions_by_group.append((content_type, permissions_of_model))
+        context['permissions_by_group'] = permissions_by_group
+        context['group_permissions'] = self.object.permissions.all()
         
         context['action'] = 'Editar'
         return context
