@@ -13,4 +13,6 @@ urlpatterns = [
     path("beneficiaries", views.BeneficiaryListView.as_view(), name="b_list"),
     path("beneficiaries/create/", views.BeneficiaryCreateView.as_view(), name="b_create"),
     path("beneficiaries/edit/<int:pk>/", views.BeneficiaryEditView.as_view(), name="b_edit"),
+    path("beneficiaries/detail/<int:pk>/", views.BeneficiaryDetailView.as_view(), name="b_detail"),
+    
 ]

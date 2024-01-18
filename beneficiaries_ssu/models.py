@@ -22,7 +22,7 @@ class Beneficiary(models.Model):
     date_of_birth = models.DateField('fecha de nacimiento')
     address = models.CharField('direccion',max_length=100,null=True,blank=True)
     m_code = models.CharField('matricula',max_length=10,unique=True)
-    blood_group = models.CharField('grupo sanguineo',max_length=3)
+    blood_group = models.CharField('grupo sanguineo',max_length=5)
     is_active = models.BooleanField('activo',default=True)
     type_beneficiary = models.ForeignKey(TypeBeneficiary, on_delete=models.SET_NULL, null=True,blank=True)
     beneficiary_d = models.ForeignKey('self',on_delete=models.CASCADE,blank=True,null=True,related_name='dependents')

@@ -92,7 +92,25 @@ class BeneficiaryCreateView(LoginRequiredMixin, CreateView):
         return context
     
     def form_valid(self, form):
-        form.instance.created_by = self.request.user
+        beneficiary = form.instance
+        beneficiary.created_by = self.request.user
+        
+        # generar  m_code 
+        initials_first_name = beneficiary.first_name[0:1].upper()
+        initials_last_name = ''.join([x[0].upper() for x in beneficiary.last_name.split()])
+        full_initials = initials_last_name + initials_first_name
+        birth_day = beneficiary.date_of_birth.strftime('%d')
+        birth_month = beneficiary.date_of_birth.strftime('%m')
+        birth_year = beneficiary.date_of_birth.strftime('%y')
+        
+        m_code = birth_year + '-' + birth_month + birth_day + '-' + full_initials
+        
+        # comprobar si el codigo ya existe
+        existings_b = Beneficiary.objects.filter(m_code__startswith=m_code)
+        if existings_b.exists():
+            m_code = m_code + str(existings_b.count())
+        
+        beneficiary.m_code = m_code
         return super().form_valid(form)
 
 
@@ -117,3 +135,14 @@ class BeneficiaryEditView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
+    
+
+class BeneficiaryDetailView(LoginRequiredMixin, DetailView):
+    model = Beneficiary
+    template_name = 'beneficiaries_ssu/beneficiaries/beneficiary_detail.html'
+    context_object_name = 'beneficiary'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Detalle de Beneficiario'
+        return context
