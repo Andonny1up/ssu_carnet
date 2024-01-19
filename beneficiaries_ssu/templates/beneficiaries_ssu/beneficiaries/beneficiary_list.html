@@ -28,12 +28,12 @@
                             <table id="table_users" class="table table-hover table-bordered">
                                 <thead>
                                     <tr >
-                                        <th>N#</th>
-                                        <th>Nombre Completo</th>
-                                        <th>N# Carnet</th>
-                                        <th>Tipo Beneficiario</th>
-                                        <th>Estado</th>
-                                        <th>Acciones</th>
+                                        <th class="text-bg-primary">N#</th>
+                                        <th class="text-bg-primary">Nombre Completo</th>
+                                        <th class="text-bg-primary">N# Carnet</th>
+                                        <th class="text-bg-primary">Tipo Beneficiario</th>
+                                        <th class="text-bg-primary">Estado</th>
+                                        <th class="text-bg-primary">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody id="search_results" style="display: none;">
@@ -48,6 +48,8 @@
                                         <td>
                                             {% if bene.type_beneficiary %}
                                                 {{ bene.type_beneficiary.name }}
+                                            {% elif bene.beneficiary_d %}
+                                                Dependiente
                                             {% else %}
                                                 Sin Tipo
                                             {% endif %}

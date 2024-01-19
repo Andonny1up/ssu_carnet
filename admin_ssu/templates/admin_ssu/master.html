@@ -33,6 +33,11 @@
             background-color: var(--ligth-color);
             border-bottom: 0.1rem solid var(--gray-color);
         }
+        .card{
+            border: none;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.2rem 0.5rem rgba(0,0,0,0.2);
+        }
         .dropdown-navbar .dropdown-menu{
             width: 225px;
         }
@@ -169,7 +174,7 @@
     <header>
         {% include "admin_ssu/layouts/header.html" %}
     </header>
-    <main>
+    <main class="mb-5">
         {% block content %}
         
         {% endblock content %}

@@ -1,15 +1,29 @@
 {% extends "admin_ssu/master.html" %}
 {% load static %}
+
+{% block title %} {{ title }} {% endblock title %}
+
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="col">
             <h1 class="heading">
-                <i class="fa fa-user"></i> Detalles De Usuario
+                <i class="fa fa-user"></i> {{ title }}
                 <div class="mt-2">
                     <a href="{% url 'admin_ssu:bene_ssu:b_list' %}" class="btn btn-warning btn-sm"><i class="fa fa-arrow-left"></i> Volver</a>
                     <a href="{% url 'admin_ssu:bene_ssu:b_edit' beneficiary.id %}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Editar</a>
-                    <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="fa fa-trash"></i> Dar Baja</a>
+                    {% if beneficiary.is_active %}
+                    <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="fa fa-thumbs-down"></i> Baja</a>
+                    {% else %}
+                    <a href="#" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#activeModal"><i class="fa fa-thumbs-up"></i> Alta</a>
+                    {% endif %}
+                </div>
+                <div>
+                    {% if beneficiary.type_beneficiary.can_have_dependents %}
+                    <a href="{% url 'admin_ssu:bene_ssu:b_de_create' beneficiary.id %}" class="btn btn-primary btn-sm">
+                        <i class="fa fa-user-plus"></i>Agregar Dependiente
+                    </a>
+                    {% endif %}
                 </div>
             </h1>
         </div>
@@ -31,6 +45,17 @@
         <div class="col-12 col-md-7 col-lg-8">
             <div class="card">
                 <div class="card-body p-5">
+                    {% if beneficiary.beneficiary_d %}
+                    <div class="panel-view">
+                        <p>Dependiente De</p>
+                        <p class="d-flex justify-content-between">
+                            <span>{{ beneficiary.beneficiary_d.first_name |upper }} {{ beneficiary.beneficiary_d.last_name |upper }}</span>
+                            <a href="{% url 'admin_ssu:bene_ssu:b_detail' beneficiary.beneficiary_d.id %}" class="">Ver Más</a>
+                        </p>
+                        
+                    </div>
+                    <hr>
+                    {% endif %}
                     <div class="panel-view">
                         <p>Nombre Completo</p>
                         <p>{{ beneficiary.first_name |upper }} {{ beneficiary.last_name |upper }}</p>
@@ -70,7 +95,6 @@
                         {% else %}
                             <p>Inactivo</p>
                         {% endif %}
-                        <hr>
                     </div>
                     {% comment %} <div class="panel-view">
                         <p>Roles</p>
@@ -82,24 +106,89 @@
             </div>
         </div>
     </div>
+    <div class="row mt-5">
+        <div class="col">
+            {% if dependents %}
+            <h3 class="heading"><i class="fa fa-user"></i>Dependientes</h3>
+            <div class="card mt-3">
+                <div class="card-body">
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="text-bg-primary">Nombre</th>
+                                    <th class="text-bg-primary" >C.I</th>
+                                    <th class="text-bg-primary" >Fecha de Nacimiento</th>
+                                    <th class="text-bg-primary">Estado</th>
+                                    <th class="text-bg-primary">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dependent in dependents %}
+                                <tr>
+                                    <td>{{ dependent.first_name }} {{ dependent.last_name }}</td>
+                                    <td>{{ dependent.dni }}</td>
+                                    <td>{{ dependent.date_of_birth }}</td>
+                                    <td>
+                                        {% if dependent.is_active %}
+                                            <span class="badge bg-success">Activo</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Inactivo</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'admin_ssu:bene_ssu:b_detail' dependent.id %}" class="btn btn-warning btn-sm"><i class="fa fa-eye"></i></a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
 <!-- Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header my-bg-danger" data-bs-theme="dark">
-          <h1 class="modal-title fs-5" id="deleteModalLabel"> <i class="fa fa-trash"></i> Eliminar</h1>
+        <div class="modal-header text-bg-danger" data-bs-theme="dark">
+          <h1 class="modal-title fs-5" id="deleteModalLabel"> <i class="fa fa-trash"></i> Dar De Baja</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">  
-            <p>¿Está seguro de eliminar este usuario?</p>
+            <p>¿Está seguro de que desea dar de baja a este beneficiario ?</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-gray" data-bs-dismiss="modal">Cancelar</button>
-          {% comment %} <form action="{% url 'admin_ssu:delete_user' user.id %}" method="POST" id="deleteForm">
+        <form action="{% url 'admin_ssu:bene_ssu:toggle_b_active' user.id %}" method="POST" id="deleteForm">
             {% csrf_token %}
-            <button type="submit" class="btn my-btn-danger">Eliminar</button>
-        </form> {% endcomment %}
+            <button type="submit" class="btn btn-danger">Confirmar Baja</button>
+        </form>
+        </div>
+      </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="activeModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header text-bg-success" data-bs-theme="dark">
+          <h1 class="modal-title fs-5" id="deleteModalLabel"> <i class="fa fa-trash"></i> Dar De Alta</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">  
+            <p>¿Está seguro de que desea dar de Alta a este beneficiario ?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-gray" data-bs-dismiss="modal">Cancelar</button>
+        <form action="{% url 'admin_ssu:bene_ssu:toggle_b_active' user.id %}" method="POST" id="deleteForm">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Confirmar Alta</button>
+        </form>
         </div>
       </div>
     </div>

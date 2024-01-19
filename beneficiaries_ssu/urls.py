@@ -14,5 +14,9 @@ urlpatterns = [
     path("beneficiaries/create/", views.BeneficiaryCreateView.as_view(), name="b_create"),
     path("beneficiaries/edit/<int:pk>/", views.BeneficiaryEditView.as_view(), name="b_edit"),
     path("beneficiaries/detail/<int:pk>/", views.BeneficiaryDetailView.as_view(), name="b_detail"),
+    path('beneficiary/toggle_active/<int:pk>/', views.toggle_beneficiary_active, name='toggle_b_active'),
+    
+    # Dependents
+    path("beneficiaries/dependents/create/<int:pk>/", views.DependentCreateView.as_view(), name="b_de_create"),
     
 ]
