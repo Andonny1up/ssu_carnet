@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponseRedirect
 
 from django.views import View
@@ -11,7 +11,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import TypeBeneficiary , Beneficiary, Carnet
 
-from .forms import TypeBeneficiaryForm, BeneficiaryForm
+from .forms import TypeBeneficiaryForm, BeneficiaryForm, CarnetForm
 from django import forms
 
 from django.db.models import Q
@@ -22,18 +22,28 @@ from django.utils import timezone
 from datetime import date, timedelta
 # Create your views here.
 
-class TypeBeneficiaryListView(LoginRequiredMixin, ListView):
+# types
+class TypeBeneficiaryListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = TypeBeneficiary
     template_name = 'beneficiaries_ssu/types/type_beneficiary_list.html'
     context_object_name = 'type_beneficiaries'
     paginate_by = 10
+    permission_required = 'beneficiaries_ssu.view_typebeneficiary'
     
     def get_queryset(self):
-        return TypeBeneficiary.objects.all().order_by('-created_at')
+        queryset = TypeBeneficiary.objects.all().order_by('-created_at')
+        search_query = self.request.GET.get('search', '')
+        if search_query:
+            queryset = queryset.filter(
+                Q(name__icontains=search_query)
+            )
+        return queryset
     
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Tipos de Beneficiarios'
+        context['search'] = self.request.GET.get('search', '')
         return context
 
 
@@ -75,11 +85,12 @@ class TypeBeneficiaryDeleteView(LoginRequiredMixin, DeleteView):
 
 
 # beneficiary
-class BeneficiaryListView(LoginRequiredMixin, ListView):
+class BeneficiaryListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Beneficiary
     template_name = 'beneficiaries_ssu/beneficiaries/beneficiary_list.html'
     context_object_name = 'beneficiaries'
     paginate_by = 10
+    permission_required = 'beneficiaries_ssu.view_beneficiary'
     
     def get_queryset(self):
         queryset = Beneficiary.objects.all().order_by('-created_at')
@@ -99,11 +110,12 @@ class BeneficiaryListView(LoginRequiredMixin, ListView):
         return context
 
 
-class BeneficiaryCreateView(LoginRequiredMixin, CreateView):
+class BeneficiaryCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Beneficiary
     form_class = BeneficiaryForm
     template_name = 'beneficiaries_ssu/beneficiaries/beneficiary_add_edit.html'
     success_url = reverse_lazy('admin_ssu:bene_ssu:b_list')
+    permission_required = 'beneficiaries_ssu.add_beneficiary'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -133,11 +145,12 @@ class BeneficiaryCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class BeneficiaryEditView(LoginRequiredMixin, UpdateView):
+class BeneficiaryEditView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Beneficiary
     form_class = BeneficiaryForm
     template_name = 'beneficiaries_ssu/beneficiaries/beneficiary_add_edit.html'
     success_url = reverse_lazy('admin_ssu:bene_ssu:b_list')
+    permission_required = 'beneficiaries_ssu.change_beneficiary'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -149,6 +162,11 @@ class BeneficiaryEditView(LoginRequiredMixin, UpdateView):
         dob = form.initial['date_of_birth']
         form.initial['date_of_birth'] = dob.strftime('%Y-%m-%d')
         form.fields['date_of_birth'].widget = forms.DateInput(attrs={'class':'form-control','type': 'date'})
+        
+        # Si el beneficiario tiene un 'beneficiary_d', ocultamos el campo 'type_beneficiary'
+        if self.object.beneficiary_d:
+            form.fields['type_beneficiary'].widget = forms.HiddenInput()
+            form.fields['type_beneficiary'].label = ""
         return form
     
     def form_valid(self, form):
@@ -156,10 +174,11 @@ class BeneficiaryEditView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
     
 
-class BeneficiaryDetailView(LoginRequiredMixin, DetailView):
+class BeneficiaryDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Beneficiary
     template_name = 'beneficiaries_ssu/beneficiaries/beneficiary_detail.html'
     context_object_name = 'beneficiary'
+    permission_required = 'beneficiaries_ssu.view_beneficiary'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -170,6 +189,10 @@ class BeneficiaryDetailView(LoginRequiredMixin, DetailView):
 
 @login_required
 def toggle_beneficiary_active(request, pk):
+    if not request.user.has_perm('beneficiaries_ssu.change_beneficiary'):
+        messages.error(request, 'No tienes permiso para cambiar este beneficiario.')
+        return redirect(reverse('admin_ssu:bene_ssu:b_list'))
+    
     beneficiary = get_object_or_404(Beneficiary, pk=pk)
     beneficiary.is_active = not beneficiary.is_active
     beneficiary.save()
@@ -183,10 +206,11 @@ def toggle_beneficiary_active(request, pk):
 
 
 # Dependents
-class DependentCreateView(LoginRequiredMixin, CreateView):
+class DependentCreateView(LoginRequiredMixin,PermissionRequiredMixin, CreateView):
     model = Beneficiary
     form_class = BeneficiaryForm
     template_name = 'beneficiaries_ssu/beneficiaries/beneficiary_add_edit.html'
+    permission_required = 'beneficiaries_ssu.add_beneficiary'
     
     def get_success_url(self):
         return reverse('admin_ssu:bene_ssu:b_detail', args=[self.object.beneficiary_d.id])
@@ -257,11 +281,37 @@ class DependentCreateView(LoginRequiredMixin, CreateView):
 #         return super().form_valid(form)
 
 
-# carnets 
-class BeneficiaryCarnetView(LoginRequiredMixin, DetailView):
+# carnets
+class BeneficiaryCarnetListView(LoginRequiredMixin,PermissionRequiredMixin, ListView):
+    model = Beneficiary
+    template_name = 'beneficiaries_ssu/carnets/beneficiary_carnets_list.html'
+    context_object_name = 'beneficiaries'
+    paginate_by = 10
+    permission_required = 'beneficiaries_ssu.view_carnet'
+    
+    def get_queryset(self):
+        queryset = Beneficiary.objects.all().order_by('-created_at')
+        search_query = self.request.GET.get('search', '')
+        if search_query:
+            queryset = queryset.annotate(
+                full_name=Concat('first_name', V(' '), 'last_name')
+            ).filter(
+                Q(full_name__icontains=search_query) | Q(dni__icontains=search_query)
+            )
+        return queryset 
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Carnets Beneficiarios'
+        context['search'] = self.request.GET.get('search', '')
+        return context
+    
+    
+class BeneficiaryCarnetView(LoginRequiredMixin,PermissionRequiredMixin, DetailView):
     model = Beneficiary
     template_name = 'beneficiaries_ssu/carnets/beneficiary_carnets.html'
     context_object_name = 'beneficiary'
+    permission_required = 'beneficiaries_ssu.view_carnet'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -278,10 +328,11 @@ class BeneficiaryCarnetView(LoginRequiredMixin, DetailView):
         return context
 
 
-class CarnetCreateView(LoginRequiredMixin, CreateView):
+class CarnetCreateView(LoginRequiredMixin,PermissionRequiredMixin, CreateView):
     model = Carnet
-    fields = ['date_of_issue','date_of_expiration']
+    form_class = CarnetForm
     template_name = 'beneficiaries_ssu/carnets/carnet_add.html'
+    permission_required = 'beneficiaries_ssu.add_carnet'
     
     def dispatch(self, request, *args, **kwargs):
         bene = Beneficiary.objects.get(id=self.kwargs['pk'])
@@ -307,6 +358,17 @@ class CarnetCreateView(LoginRequiredMixin, CreateView):
     
     def get_initial(self):
         initial = super().get_initial()
-        initial['date_of_issue'] = date.today()
-        initial['date_of_expiration'] = date.today() + timedelta(days=365)
+        initial['date_of_issue'] = date.today().strftime('%Y-%m-%d')
+        initial['date_of_expiration'] = (date.today() + timedelta(days=365)).strftime('%Y-%m-%d')
         return initial
+    
+    
+@login_required
+@permission_required('beneficiaries_ssu.delete_carnet')
+def deactivate_carnet(request, pk):
+    carnet = get_object_or_404(Carnet, pk=pk)
+    carnet.is_active = False
+    carnet.save()
+
+    messages.success(request, 'El carnet ha sido desactivado.')
+    return redirect(reverse('admin_ssu:bene_ssu:b_c_list', args=[carnet.beneficiary.id]))

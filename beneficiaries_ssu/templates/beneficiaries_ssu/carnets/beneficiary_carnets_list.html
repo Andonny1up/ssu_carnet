@@ -6,10 +6,7 @@
     <div class="row">
         <div class="col">
             <h1 class="heading">
-                <i class="fa fa-user-plus"></i> {{ title }}
-                {% if perms.beneficiaries_ssu.add_beneficiary %}
-                <a href="{% url "admin_ssu:bene_ssu:b_create" %}" class="btn btn-primary"><i class="fa fa-plus-circle"></i>Nuevo</a>
-                {% endif %}
+                <i class="fa fa-drivers-license-o"></i> {{ title }}
             </h1>
             
         </div>
@@ -32,47 +29,20 @@
                                     <tr >
                                         <th>N#</th>
                                         <th>Nombre Completo</th>
+                                        <th>N# Matricula</th>
                                         <th>N# Carnet</th>
-                                        <th>Tipo Beneficiario</th>
-                                        <th>Estado</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody id="search_results" style="display: none;">
-
-                                </tbody>
-                                <tbody id="original_data">
+                                <tbody>
                                     {% for bene in beneficiaries %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{ bene.first_name }} {{ bene.last_name }}</td>
+                                        <td>{{ bene.m_code }}</td>
                                         <td>{{ bene.dni }}</td>
-                                        <td>
-                                            {% if bene.type_beneficiary %}
-                                                {{ bene.type_beneficiary.name }}
-                                            {% elif bene.beneficiary_d %}
-                                                Dependiente
-                                            {% else %}
-                                                Sin Tipo
-                                            {% endif %}
-                                        </td>
                                         <td class="text-center">
-                                            {% if bene.is_active %}
-                                                <span class="badge text-bg-success">Activo</span>
-                                            {% else %}
-                                                <span class="badge text-bg-danger">Inactivo</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if perms.beneficiaries_ssu.change_beneficiary %}
-                                            <a href="{% url "admin_ssu:bene_ssu:b_detail" bene.id %}" class="btn btn-sm btn-warning"><i class="fa fa-eye"></i></a>
-                                            {% endif %}
-                                            {% if perms.beneficiaries_ssu.change_beneficiary %}
-                                            <a href="{% url "admin_ssu:bene_ssu:b_edit" bene.id %}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
-                                            {% endif %}
-                                            {% if perms.beneficiaries_ssu.delete_beneficiary %}
-                                            {% comment %} <a href="#" class="btn btn-sm my-btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ type.id }}"><i class="fa fa-trash"></i></a> {% endcomment %}
-                                            {% endif %}
+                                            <a href="{% url "admin_ssu:bene_ssu:b_c_list" bene.id %}" class="btn btn-orange btn-sm"> <i class="fa fa-drivers-license"></i> Carnets</a>
                                         </td>
                                     </tr>
                                     {% endfor %}

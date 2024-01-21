@@ -19,7 +19,9 @@
             <div class="card">
                 <div class="card-body">
                     <div class="search-div">
-                        <input class="form-control" type="text" id="search" placeholder="Buscar Rol">
+                        <form action="">
+                            <input class="form-control" type="text" name="search" placeholder="Buscar Roles" value={{search}}>
+                        </form>
                     </div>
                     
                     <div class="table-responsive">
@@ -33,10 +35,7 @@
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody id="search_results" style="display: none;">
-
-                                </tbody>
-                                <tbody id="original_data">
+                                <tbody>
                                     {% for group in groups %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
@@ -64,11 +63,11 @@
                                 <ul class="pagination d-flex justify-content-center justify-content-md-end">
                                     {% if page_obj.has_previous %}
                                     <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}&search={{ search }}" aria-label="Previous">
                                             <span aria-hidden="true">&laquo; <span class="pagi-hidden">Anterior</span></span>
                                         </a>
                                     </li>
-                                    <li class="page-item"><a class="page-link" href="?page=1"> 1 </a></li>
+                                    <li class="page-item"><a class="page-link" href="?page=1&search={{ search }}"> 1 </a></li>
                                     <li class="page-item disabled"><a class="page-link" href=""> ... </a></li>
                                     <li class="page-item active"><span class="page-link">{{ page_obj.number }} </span></li>
                                     {% else %}
@@ -81,13 +80,20 @@
                                     {% endif %}
                                                                         
                                     
+                                    {% comment %} {% for i in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == i %}
+                                            <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                                        {% else %}
+                                            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                        {% endif %}
+                                    {% endfor %} {% endcomment %}
                                     
                                     
                                     {% if page_obj.has_next %}
                                     <li class="page-item disabled"><a class="page-link" href=""> ... </a></li>
-                                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}"> {{ page_obj.paginator.num_pages }} </a></li>
+                                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&search={{ search }}"> {{ page_obj.paginator.num_pages }} </a></li>
                                     <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}&search={{ search }}" aria-label="Next">
                                             <span aria-hidden="true"><span class="pagi-hidden">Siguiente</span> &raquo;</span>
                                         </a>
                                     </li>

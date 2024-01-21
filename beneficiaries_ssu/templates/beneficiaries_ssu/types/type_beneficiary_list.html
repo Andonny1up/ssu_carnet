@@ -19,7 +19,9 @@
             <div class="card">
                 <div class="card-body">
                     <div class="search-div">
-                        <input class="form-control" type="text" id="search" placeholder="Buscar usuarios">
+                        <form>
+                            <input class="form-control" type="text" name="search" placeholder="Buscar Tipo Beneficiario" value={{ search }}>
+                        </form>
                     </div>
                     
                     <div class="table-responsive">
@@ -34,10 +36,7 @@
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody id="search_results" style="display: none;">
-
-                                </tbody>
-                                <tbody id="original_data">
+                                <tbody>
                                     {% for type in type_beneficiaries %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
@@ -76,11 +75,11 @@
                                 <ul class="pagination d-flex justify-content-center justify-content-md-end">
                                     {% if page_obj.has_previous %}
                                     <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}&search={{ search }}" aria-label="Previous">
                                             <span aria-hidden="true">&laquo; <span class="pagi-hidden">Anterior</span></span>
                                         </a>
                                     </li>
-                                    <li class="page-item"><a class="page-link" href="?page=1"> 1 </a></li>
+                                    <li class="page-item"><a class="page-link" href="?page=1&search={{ search }}"> 1 </a></li>
                                     <li class="page-item disabled"><a class="page-link" href=""> ... </a></li>
                                     <li class="page-item active"><span class="page-link">{{ page_obj.number }} </span></li>
                                     {% else %}
@@ -104,9 +103,9 @@
                                     
                                     {% if page_obj.has_next %}
                                     <li class="page-item disabled"><a class="page-link" href=""> ... </a></li>
-                                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}"> {{ page_obj.paginator.num_pages }} </a></li>
+                                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&search={{ search }}"> {{ page_obj.paginator.num_pages }} </a></li>
                                     <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}&search={{ search }}" aria-label="Next">
                                             <span aria-hidden="true"><span class="pagi-hidden">Siguiente</span> &raquo;</span>
                                         </a>
                                     </li>
@@ -136,7 +135,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">  
-            <p>¿Está seguro de eliminar este usuario?</p>
+            <p>¿Está seguro de eliminar este regitro?</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-gray" data-bs-dismiss="modal">Cancelar</button>
@@ -150,51 +149,6 @@
 </div>
 {% endblock content %}
 {% block js %}
-<script>
-    $('#search').on('input', function() {
-        var query = $(this).val();
-        if (query.length > 3) {
-            $.ajax({
-                url: '/admin/users-search/',
-                data: {
-                    'q': $(this).val()
-                },
-                dataType: 'json',
-                success: function(data) {
-                    let users = JSON.parse(data);
-                    let tbody = $('#search_results');
-                    tbody.empty();
-                    $.each(users, function(index, user) {
-                        let row = $('<tr></tr>');
-                        row.append('<td>' + (index + 1) + '</td>');
-                        row.append('<td>' + user.fields.username + '</td>');
-                        row.append('<td>' + user.fields.first_name + " " + user.fields.last_name + '</td>');
-                        row.append('<td>' + user.fields.email + '</td>');
-                        let status = user.fields.is_active ? '<span class="badge text-bg-success">Activo</span>' : '<span class="badge text-bg-danger">Inactivo</span>';
-                        let superuser = user.fields.is_superuser ? '<span class="badge text-bg-primary">Admin</span> <br>' : '';
-                        row.append('<td>' + superuser + ' ' + status + '</td>');
-                        let btnView = '<a href="" class="btn btn-sm btn-warning"><i class="fa fa-eye"></i></a>';
-                        
-                        let urlEdit = "{% url 'admin_ssu:user_edit' 1234567890 %}".replace('1234567890', user.pk);
-                        let btnEdit = '<a href="'+ urlEdit +'" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
-                        
-                        let btnDelete = '<a href="#" class="btn btn-sm my-btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="' + user.pk + '"><i class="fa fa-trash"></i></a>';
-                        row.append('<td>'+ btnView +' '+ btnEdit +' '+ btnDelete +'</td>');
-                        tbody.append(row);
-                    });
-                }
-            });
-            $('#pagination').addClass('hidden');
-            $('#original_data').hide();
-            $('#search_results').show();
-        } else {
-            $('#pagination').removeClass('hidden');
-            $('#search_results').hide();
-            $('#search_results').empty();
-            $('#original_data').show();
-        }
-    });
-</script>
 <script>
     $(document).ready(function() {
         $('#deleteModal').on('show.bs.modal', function(e) {

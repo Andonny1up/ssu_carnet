@@ -1,12 +1,16 @@
-from django.shortcuts import render, redirect
+from typing import Any
+from django.db.models.query import QuerySet
+from django.shortcuts import render, redirect, get_object_or_404
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
+from django.contrib.contenttypes.models import ContentType
 # formularios
 from .forms import EmailAuthenticationForm
 from . import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm, SetPasswordForm
+from django.contrib.auth import update_session_auth_hash, get_user_model
+from django.contrib import messages
 #json
 from django.http import JsonResponse
 from django.core import serializers
@@ -41,7 +45,16 @@ class EmailLoginView(LoginView):
 class HomePageView(LoginRequiredMixin,View):
     def get(self, request, *args, **kwargs):
         return render(request, 'admin_ssu/home.html')
-    
+
+
+class UserProfileView(LoginRequiredMixin, DetailView):
+    model = User
+    template_name = 'admin_ssu/users/user_profile.html'  # Asegúrate de cambiar esto a tu plantilla real
+    context_object_name = 'user'
+
+    def get_object(self):
+        return self.request.user
+      
 
 # Usuarios
 class UserListView(LoginRequiredMixin,PermissionRequiredMixin, ListView):
@@ -89,6 +102,43 @@ class UserEditView(LoginRequiredMixin,PermissionRequiredMixin, UpdateView):
     success_url = reverse_lazy('admin_ssu:user_view')
     permission_required = 'auth.change_user'
     
+    
+class UserChangePasswordView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        form = PasswordChangeForm(request.user)
+        return render(request, 'admin_ssu/users/user_change_password.html', {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important, to update the session with the new password
+            messages.success(request, 'Tu contraseña fue actualizada exitosamente!')
+            return redirect('admin_ssu:user_profile')
+        else:
+            messages.error(request, 'Por favor corrige el error abajo.')
+        return render(request, 'admin_ssu/users/user_change_password.html', {'form': form})
+
+
+class AdminChangePasswordView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = 'auth.change_user'
+
+    def get(self, request, *args, **kwargs):
+        user = get_object_or_404(get_user_model(), pk=kwargs['pk'])
+        form = SetPasswordForm(user)
+        return render(request, 'admin_ssu/users/admin_change_password.html', {'form': form, 'user': user})
+
+    def post(self, request, *args, **kwargs):
+        user = get_object_or_404(get_user_model(), pk=kwargs['pk'])
+        form = SetPasswordForm(user, request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'La contraseña fue actualizada exitosamente!')
+            return redirect('admin_ssu:user_view', pk=user.pk)
+        else:
+            messages.error(request, 'Por favor corrige el error abajo.')
+        return render(request, 'admin_ssu/users/admin_change_password.html', {'form': form, 'user': user})
+    
 
 class UserDeleteView(LoginRequiredMixin,PermissionRequiredMixin, DeleteView):
     model = User
@@ -112,6 +162,18 @@ class GroupListView(LoginRequiredMixin,PermissionRequiredMixin,ListView):
     context_object_name = 'groups'
     paginate_by = 10
     permission_required = 'auth.view_group'
+    
+    def get_queryset(self):
+        queryset = Group.objects.all().order_by('-id')
+        search_query = self.request.GET.get('search', '')
+        if search_query:
+            queryset = queryset.filter(name__icontains=search_query)
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search'] = self.request.GET.get('search', '')
+        return context
 
     
 class GroupCreateView(LoginRequiredMixin,PermissionRequiredMixin,CreateView):
@@ -164,3 +226,16 @@ class GroupDeleteView(LoginRequiredMixin,PermissionRequiredMixin, DeleteView):
     # template_name = 'admin_ssu/users/user_confirm_delete.html'
     success_url = reverse_lazy('admin_ssu:group_list')
     permission_required = 'auth.delete_group'
+    
+    
+# permisos
+class AllPermissionsView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    model = Permission
+    template_name = 'admin_ssu/permissions/permissions_list.html'
+    paginate_by = 10
+    permission_required = 'auth.view_permission'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        return context

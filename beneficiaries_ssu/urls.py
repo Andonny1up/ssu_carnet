@@ -21,6 +21,8 @@ urlpatterns = [
     
     
     #carnets
+    path("beneficiaries/carnets", views.BeneficiaryCarnetListView.as_view(), name="b_cs_list"),
     path("beneficiaries/carnets/<int:pk>/", views.BeneficiaryCarnetView.as_view(), name="b_c_list"),
     path("beneficiaries/carnets/create/<int:pk>/", views.CarnetCreateView.as_view(), name="b_c_create"),
+    path("beneficiaries/carnets/deactivate/<int:pk>/", views.deactivate_carnet, name="b_c_deactivate"),
 ]

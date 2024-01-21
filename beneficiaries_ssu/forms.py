@@ -24,3 +24,13 @@ class BeneficiaryForm(forms.ModelForm):
                    'blood_group':forms.TextInput(attrs={'class':'form-control'}),
                    'type_beneficiary':forms.Select(attrs={'class':'form-control'}),
         }
+        
+
+class CarnetForm(forms.ModelForm):
+    class Meta:
+        model = Carnet
+        fields = ['date_of_issue', 'date_of_expiration']
+        widgets = {
+            'date_of_issue': forms.DateInput(attrs={'class':'form-control', 'type': 'date'}),
+            'date_of_expiration': forms.DateInput(attrs={'class':'form-control', 'type': 'date'}),
+        }

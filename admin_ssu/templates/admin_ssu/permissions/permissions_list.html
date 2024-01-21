@@ -1,15 +1,12 @@
 {% extends "admin_ssu/master.html" %}
-{% block title %} {{ title }} {% endblock title %}
+{% block title %} Permisos {% endblock title %}
 {% block content %}
 
 <div class="container">
     <div class="row">
         <div class="col">
             <h1 class="heading">
-                <i class="fa fa-user-plus"></i> {{ title }}
-                {% if perms.beneficiaries_ssu.add_beneficiary %}
-                <a href="{% url "admin_ssu:bene_ssu:b_create" %}" class="btn btn-primary"><i class="fa fa-plus-circle"></i>Nuevo</a>
-                {% endif %}
+                <i class="fa fa-key"></i> Permisos
             </h1>
             
         </div>
@@ -19,9 +16,9 @@
             <div class="card">
                 <div class="card-body">
                     <div class="search-div">
-                        <form action="" method="GET">
-                            <input class="form-control" type="text" name="search" placeholder="Buscar Beneficiario" value="{{ search }}">
-                        </form>
+                        {% comment %} <form action="">
+                            <input class="form-control" type="text" name="search" placeholder="Buscar Roles" value={{search}}>
+                        </form> {% endcomment %}
                     </div>
                     
                     <div class="table-responsive">
@@ -31,50 +28,17 @@
                                 <thead>
                                     <tr >
                                         <th>N#</th>
-                                        <th>Nombre Completo</th>
-                                        <th>N# Carnet</th>
-                                        <th>Tipo Beneficiario</th>
-                                        <th>Estado</th>
-                                        <th>Acciones</th>
+                                        <th>Tabla</th>
+                                        <th>Permiso</th>
                                     </tr>
                                 </thead>
-                                <tbody id="search_results" style="display: none;">
-
-                                </tbody>
-                                <tbody id="original_data">
-                                    {% for bene in beneficiaries %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{ bene.first_name }} {{ bene.last_name }}</td>
-                                        <td>{{ bene.dni }}</td>
-                                        <td>
-                                            {% if bene.type_beneficiary %}
-                                                {{ bene.type_beneficiary.name }}
-                                            {% elif bene.beneficiary_d %}
-                                                Dependiente
-                                            {% else %}
-                                                Sin Tipo
-                                            {% endif %}
-                                        </td>
-                                        <td class="text-center">
-                                            {% if bene.is_active %}
-                                                <span class="badge text-bg-success">Activo</span>
-                                            {% else %}
-                                                <span class="badge text-bg-danger">Inactivo</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if perms.beneficiaries_ssu.change_beneficiary %}
-                                            <a href="{% url "admin_ssu:bene_ssu:b_detail" bene.id %}" class="btn btn-sm btn-warning"><i class="fa fa-eye"></i></a>
-                                            {% endif %}
-                                            {% if perms.beneficiaries_ssu.change_beneficiary %}
-                                            <a href="{% url "admin_ssu:bene_ssu:b_edit" bene.id %}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
-                                            {% endif %}
-                                            {% if perms.beneficiaries_ssu.delete_beneficiary %}
-                                            {% comment %} <a href="#" class="btn btn-sm my-btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ type.id }}"><i class="fa fa-trash"></i></a> {% endcomment %}
-                                            {% endif %}
-                                        </td>
-                                    </tr>
+                                <tbody>
+                                    {% for permission in object_list %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ permission.content_type }}</td>
+                                            <td>{{ permission.name }}</td>
+                                        </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
@@ -139,6 +103,8 @@
                             </nav>
                         </div>
                     </div>
+
+
                 </div>
             </div>
         </div>
@@ -153,7 +119,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">  
-            <p>¿Está seguro de eliminar este usuario?</p>
+            <p>¿Está seguro de eliminar este ?</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-gray" data-bs-dismiss="modal">Cancelar</button>
@@ -167,6 +133,15 @@
 </div>
 {% endblock content %}
 {% block js %}
+<script>
+    $(document).ready(function() {
+        $('#deleteModal').on('show.bs.modal', function(e) {
+            var groupId = $(e.relatedTarget).data('id');
+            var url = "{% url 'admin_ssu:group_delete' 1234567890 %}".replace('1234567890', groupId);
+            $('#deleteForm').attr('action', url);
+        });
+    });
+</script>
 {% endblock js %}
 {% block css %}
 <style>

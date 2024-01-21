@@ -10,13 +10,18 @@
             <h1 class="heading">
                 <i class="fa fa-drivers-license"></i> {{ title }}
                 <div class="mt-2">
-                    {% comment %} <a href="{% url 'admin_ssu:bene_ssu:b_list' %}" class="btn btn-warning btn-sm"><i class="fa fa-arrow-left"></i> Volver</a> {% endcomment %}
+                    <a href="{% url 'admin_ssu:bene_ssu:b_cs_list' %}" class="btn btn-warning btn-sm"><i class="fa fa-arrow-left"></i> Volver a carnets</a>
                 </div>
 
             </h1>
             <div class="card mb-3">
                 <div class="card-body">
                     {% if active_carnet %}
+                    <div class="d-flex justify-content-end">
+                        {% if perms.beneficiaries_ssu.delete_carnet %}
+                            <a href="#" class="btn btn-sm btn-orange" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="fa fa-thumbs-down"></i> Dar de baja al carnet</a>
+                        {% endif %}
+                    </div>
                     <div class="panel-view">
                         <p>Nombre Completo</p>
                         <p>{{ active_carnet.beneficiary.first_name |upper }} {{ active_carnet.beneficiary.last_name |upper }}</p>
@@ -32,9 +37,11 @@
                         <p class="text-danger">Este beneficiario no tiene carnet activo</p>
                     </div>
                     <div class="d-flex justify-content-center mb-5">
+                        {% if perms.beneficiaries_ssu.add_carnet %}
                         <a href="{% url 'admin_ssu:bene_ssu:b_c_create' beneficiary.id %}" class="btn btn-primary">
                             <i class="fa fa-address-card"></i> Generar Carnet
                         </a>
+                        {% endif %}
                     </div>
                     
                     {% endif %}
@@ -87,19 +94,26 @@
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header text-bg-danger" data-bs-theme="dark">
-          <h1 class="modal-title fs-5" id="deleteModalLabel"> <i class="fa fa-trash"></i> Dar De Baja</h1>
+        <div class="modal-header my-bg-danger" data-bs-theme="dark">
+          <h1 class="modal-title fs-5" id="deleteModalLabel"> <i class="fa fa-warning"></i> Dar De Baja</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">  
-            <p>¿Está seguro de que desea dar de baja a este beneficiario ?</p>
+        <div class="modal-body">
+            <div class="text-center">
+                <i class="fa fa-warning" style="font-size:5rem; color: gold;"></i>
+            </div>
+            
+            <p>¿Está seguro de que desea dar de baja a este carnet ?</p>
+            <p>Esta acción no podras deshacerse </p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-gray" data-bs-dismiss="modal">Cancelar</button>
-        <form action="" method="POST" id="deleteForm">
+        {% if active_carnet %}
+        <form action="{% url "admin_ssu:bene_ssu:b_c_deactivate" active_carnet.id %}" method="POST" id="deleteForm">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Confirmar Baja</button>
+            <button type="submit" class="btn my-btn-danger">Confirmar Baja</button>
         </form>
+        {% endif %}
         </div>
       </div>
     </div>

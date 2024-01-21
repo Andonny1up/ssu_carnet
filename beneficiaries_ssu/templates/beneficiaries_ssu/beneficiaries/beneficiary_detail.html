@@ -8,23 +8,31 @@
     <div class="row">
         <div class="col">
             <h1 class="heading">
-                <i class="fa fa-user"></i> {{ title }}
+                <i class="fa fa-user-plus"></i> {{ title }}
                 <div class="mt-2">
                     <a href="{% url 'admin_ssu:bene_ssu:b_list' %}" class="btn btn-warning btn-sm"><i class="fa fa-arrow-left"></i> Volver</a>
-                    <a href="{% url 'admin_ssu:bene_ssu:b_edit' beneficiary.id %}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Editar</a>
-                    {% if beneficiary.is_active %}
-                    <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="fa fa-thumbs-down"></i> Baja</a>
-                    {% else %}
-                    <a href="#" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#activeModal"><i class="fa fa-thumbs-up"></i> Alta</a>
+                    {% if perms.beneficiaries_ssu.change_beneficiary %}
+                        <a href="{% url 'admin_ssu:bene_ssu:b_edit' beneficiary.id %}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Editar</a>
+                    
+
+                        {% if beneficiary.is_active %}
+                        <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="fa fa-thumbs-down"></i> Baja</a>
+                        {% else %}
+                        <a href="#" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#activeModal"><i class="fa fa-thumbs-up"></i> Alta</a>
+                        {% endif %}
                     {% endif %}
                 </div>
                 <div>
                     {% if beneficiary.type_beneficiary.can_have_dependents %}
-                    <a href="{% url 'admin_ssu:bene_ssu:b_de_create' beneficiary.id %}" class="btn btn-primary btn-sm">
-                        <i class="fa fa-user-plus"></i>Agregar Dependiente
-                    </a>
+                        {% if perms.beneficiaries_ssu.add_beneficiary %}
+                        <a href="{% url 'admin_ssu:bene_ssu:b_de_create' beneficiary.id %}" class="btn btn-primary btn-sm">
+                            <i class="fa fa-user-plus"></i>Agregar Dependiente
+                        </a>
+                        {% endif %}
                     {% endif %}
+                    {% if perms.beneficiaries_ssu.view_carnet %}
                     <a href="{% url "admin_ssu:bene_ssu:b_c_list" beneficiary.id %}" class="btn btn-orange btn-sm"> <i class="fa fa-drivers-license"></i> Carnets</a>
+                    {% endif %}
                 </div>
             </h1>
         </div>
@@ -157,7 +165,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header text-bg-danger" data-bs-theme="dark">
-          <h1 class="modal-title fs-5" id="deleteModalLabel"> <i class="fa fa-trash"></i> Dar De Baja</h1>
+          <h1 class="modal-title fs-5" id="deleteModalLabel"> <i class="fa fa-thumbs-down"></i> Dar De Baja</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">  
@@ -178,7 +186,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header text-bg-success" data-bs-theme="dark">
-          <h1 class="modal-title fs-5" id="deleteModalLabel"> <i class="fa fa-trash"></i> Dar De Alta</h1>
+          <h1 class="modal-title fs-5" id="deleteModalLabel"> <i class="fa fa-thumbs-up"></i> Dar De Alta</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">  
