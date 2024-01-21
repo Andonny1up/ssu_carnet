@@ -57,16 +57,19 @@
                             <i class="fa fa-home"></i>Inicio
                         </a>
                     </li>
+                    {% if perms.beneficiaries_ssu.view_beneficiary %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'admin_ssu:bene_ssu:b_list' %}">
                             <i class="fa fa-user-plus"></i>Beneficiarios
                         </a>
                     </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'admin_ssu:home' %}">
                             <i class="fa fa-drivers-license-o"></i>Carnets Beneficiarios
                         </a>
                     </li>
+                    {% if perms.beneficiaries_ssu.view_typebeneficiary %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-sliders"></i> Opcion Beneficiarios
@@ -81,17 +84,20 @@
                             {% endif %}
                         </ul>
                     </li>
-                    {% if perms.auth.view_user %}
+                    {% endif %}
+                    {% if perms.auth.view_user or perms.auth.view_group or perms.auth.view_permission %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fa fa-lock"></i> Seguridad
                             </a>
                             <ul class="dropdown-menu">
+                                {% if perms.auth.view_user %}
                                 <li>
                                     <a class="dropdown-item" href="{% url "admin_ssu:user_view" %}">
                                         <i class="fa fa-user"></i> Usuarios
                                     </a>
                                 </li>
+                                {% endif %}
                                 {% if perms.auth.view_group %}
                                 <li>
                                     <a class="dropdown-item" href="{% url "admin_ssu:group_list" %}">
@@ -99,11 +105,13 @@
                                     </a>
                                 </li>
                                 {% endif %}
+                                {% if perms.auth.view_permission %}
                                 <li>
                                     <a class="dropdown-item" href="#">
                                         <i class="fa fa-key"></i> Permisos
                                     </a>
                                 </li>
+                                {% endif %}
                             </ul>
                         </li>
                     {% endif %}

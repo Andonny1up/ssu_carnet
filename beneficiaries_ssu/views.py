@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 
 from django.views import View
 from django.views.generic import ListView, DetailView
@@ -12,6 +13,13 @@ from .models import TypeBeneficiary , Beneficiary, Carnet
 
 from .forms import TypeBeneficiaryForm, BeneficiaryForm
 from django import forms
+
+from django.db.models import Q
+from django.db.models import Value as V
+from django.db.models.functions import Concat
+
+from django.utils import timezone
+from datetime import date, timedelta
 # Create your views here.
 
 class TypeBeneficiaryListView(LoginRequiredMixin, ListView):
@@ -74,11 +82,20 @@ class BeneficiaryListView(LoginRequiredMixin, ListView):
     paginate_by = 10
     
     def get_queryset(self):
-        return Beneficiary.objects.all().order_by('-created_at')
+        queryset = Beneficiary.objects.all().order_by('-created_at')
+        search_query = self.request.GET.get('search', '')
+        if search_query:
+            queryset = queryset.annotate(
+                full_name=Concat('first_name', V(' '), 'last_name')
+            ).filter(
+                Q(full_name__icontains=search_query) | Q(dni__icontains=search_query)
+            )
+        return queryset 
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Beneficiarios'
+        context['search'] = self.request.GET.get('search', '')
         return context
 
 
@@ -241,13 +258,41 @@ class DependentCreateView(LoginRequiredMixin, CreateView):
 
 
 # carnets 
+class BeneficiaryCarnetView(LoginRequiredMixin, DetailView):
+    model = Beneficiary
+    template_name = 'beneficiaries_ssu/carnets/beneficiary_carnets.html'
+    context_object_name = 'beneficiary'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Carnets de Beneficiario'
+        carnets = Carnet.objects.filter(beneficiary=self.object).order_by('-date_of_issue')
+        for carnet in carnets:
+            carnet.is_expired = carnet.date_of_expiration < timezone.now().date()
+            print("date_of_expiration: ", carnet.date_of_expiration)
+            print("timezone.now().date(): ", timezone.now().date())
+            print("timezone.now(): ", timezone.now())
+            print("is_expired: ", carnet.is_expired)
+        context['carnets'] = carnets
+        context['active_carnet'] = Carnet.objects.filter(beneficiary=self.object, is_active=True, date_of_expiration__gte=timezone.now().date()).order_by('-date_of_issue').first()
+        return context
+
+
 class CarnetCreateView(LoginRequiredMixin, CreateView):
     model = Carnet
     fields = ['date_of_issue','date_of_expiration']
     template_name = 'beneficiaries_ssu/carnets/carnet_add.html'
     
+    def dispatch(self, request, *args, **kwargs):
+        bene = Beneficiary.objects.get(id=self.kwargs['pk'])
+        active_carnet = Carnet.objects.filter(beneficiary=bene, is_active=True, date_of_expiration__gte=timezone.now().date()).order_by('-date_of_issue').first()
+        if active_carnet:
+            # Si hay un carnet activo, redirige al usuario a la página que prefieras
+            return HttpResponseRedirect(reverse('admin_ssu:bene_ssu:b_c_list', args=[bene.id]))
+        return super().dispatch(request, *args, **kwargs)
+    
     def get_success_url(self):
-        return reverse('admin_ssu:bene_ssu:b_detail', args=[self.object.beneficiary.id])
+        return reverse('admin_ssu:bene_ssu:b_c_list', args=[self.object.beneficiary.id])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -57,8 +57,14 @@
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <a href="{% url 'admin_ssu:user_detail' user.id %}" class="btn btn-sm btn-warning"><i class="fa fa-eye"></i></a>
-                                            <a href="{% url 'admin_ssu:user_edit' user.id %}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
+                                            {% if perms.auth.view_user %}
+                                                <a href="{% url 'admin_ssu:user_detail' user.id %}" class="btn btn-sm btn-warning"><i class="fa fa-eye"></i></a>
+                                            {% endif %}
+                                            {% if perms.auth.change_user %}
+                                                <a href="{% url 'admin_ssu:user_edit' user.id %}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
+                                            {% endif %}
+                                            
+                                            
                                             <a href="#" class="btn btn-sm my-btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ user.id }}"><i class="fa fa-trash"></i></a>
                                             
                                         </td>
@@ -178,9 +184,11 @@
                         let status = user.fields.is_active ? '<span class="badge text-bg-success">Activo</span>' : '<span class="badge text-bg-danger">Inactivo</span>';
                         let superuser = user.fields.is_superuser ? '<span class="badge text-bg-primary">Admin</span> <br>' : '';
                         row.append('<td>' + superuser + ' ' + status + '</td>');
+
                         let btnView = '<a href="" class="btn btn-sm btn-warning"><i class="fa fa-eye"></i></a>';
                         
                         let urlEdit = "{% url 'admin_ssu:user_edit' 1234567890 %}".replace('1234567890', user.pk);
+
                         let btnEdit = '<a href="'+ urlEdit +'" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
                         
                         let btnDelete = '<a href="#" class="btn btn-sm my-btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="' + user.pk + '"><i class="fa fa-trash"></i></a>';

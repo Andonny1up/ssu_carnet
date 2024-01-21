@@ -1,0 +1,124 @@
+{% extends "admin_ssu/master.html" %}
+{% load static %}
+
+{% block title %} {{ title }} {% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1 class="heading">
+                <i class="fa fa-drivers-license"></i> {{ title }}
+                <div class="mt-2">
+                    {% comment %} <a href="{% url 'admin_ssu:bene_ssu:b_list' %}" class="btn btn-warning btn-sm"><i class="fa fa-arrow-left"></i> Volver</a> {% endcomment %}
+                </div>
+
+            </h1>
+            <div class="card mb-3">
+                <div class="card-body">
+                    {% if active_carnet %}
+                    <div class="panel-view">
+                        <p>Nombre Completo</p>
+                        <p>{{ active_carnet.beneficiary.first_name |upper }} {{ active_carnet.beneficiary.last_name |upper }}</p>
+                        <hr>
+                    </div>
+                    <div class="panel-view">
+                        <p>Matricula</p>
+                        <p>{{ active_carnet.beneficiary.m_code }}</p>
+                        <hr>
+                    </div>
+                    {% else %}
+                    <div class="d-flex justify-content-center mt-5"> 
+                        <p class="text-danger">Este beneficiario no tiene carnet activo</p>
+                    </div>
+                    <div class="d-flex justify-content-center mb-5">
+                        <a href="{% url 'admin_ssu:bene_ssu:b_c_create' beneficiary.id %}" class="btn btn-primary">
+                            <i class="fa fa-address-card"></i> Generar Carnet
+                        </a>
+                    </div>
+                    
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            {% if carnets %}
+            <h3 class="heading"><i class="fa fa-address-card"></i>Historial</h3>
+            <div class="card mt-3">
+                <div class="card-body">
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="text-bg-primary">Fecha de emisión</th>
+                                    <th class="text-bg-primary" >Fecha de vencimiento</th>
+                                    <th class="text-bg-primary">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for carnet in carnets %}
+                                <tr>
+                                    <td>{{ carnet.date_of_issue }}</td>
+                                    <td>{{ carnet.date_of_expiration }}</td>
+                                    <td>
+                                        {% if carnet.is_active and not carnet.is_expired %}
+                                            <span class="badge bg-success">Activo</span>
+                                        {% elif carnet.is_expired %}
+                                            <span class="badge bg-secondary">Expirado</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Baja</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header text-bg-danger" data-bs-theme="dark">
+          <h1 class="modal-title fs-5" id="deleteModalLabel"> <i class="fa fa-trash"></i> Dar De Baja</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">  
+            <p>¿Está seguro de que desea dar de baja a este beneficiario ?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-gray" data-bs-dismiss="modal">Cancelar</button>
+        <form action="" method="POST" id="deleteForm">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Confirmar Baja</button>
+        </form>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}
+{% block css %}
+<style>
+    .panel-view p{
+        font-weight: 300;
+        padding-left: 0.5rem;
+    }
+    .panel-view p:first-of-type {
+        font-size: 1.3rem;
+        font-weight: 400;
+        {% comment %} color: gray; {% endcomment %}
+    }
+    .p-username{
+        font-size: 1.5rem;
+        font-weight: 300;
+    }
+</style>
+{% endblock css %}

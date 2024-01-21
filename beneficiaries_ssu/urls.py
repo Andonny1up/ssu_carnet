@@ -19,4 +19,8 @@ urlpatterns = [
     # Dependents
     path("beneficiaries/dependents/create/<int:pk>/", views.DependentCreateView.as_view(), name="b_de_create"),
     
+    
+    #carnets
+    path("beneficiaries/carnets/<int:pk>/", views.BeneficiaryCarnetView.as_view(), name="b_c_list"),
+    path("beneficiaries/carnets/create/<int:pk>/", views.CarnetCreateView.as_view(), name="b_c_create"),
 ]

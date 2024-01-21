@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import User, Group
 # formularios
 from .forms import EmailAuthenticationForm
@@ -44,11 +44,12 @@ class HomePageView(LoginRequiredMixin,View):
     
 
 # Usuarios
-class UserListView(LoginRequiredMixin, ListView):
+class UserListView(LoginRequiredMixin,PermissionRequiredMixin, ListView):
     model = User
     template_name = 'admin_ssu/users/user_list.html'
     context_object_name = 'users'
-    paginate_by = 1
+    paginate_by = 10
+    permission_required = 'auth.view_user'
     
     def get_queryset(self):
         return User.objects.all().order_by('-date_joined')
@@ -72,47 +73,53 @@ class UserSearchView(LoginRequiredMixin,View):
         return JsonResponse(users_json, safe=False)
     
 
-class UserCreateView(LoginRequiredMixin,CreateView):
+class UserCreateView(LoginRequiredMixin,PermissionRequiredMixin,CreateView):
     model = User
     form_class = forms.CustomUserCreationForm
     template_name = 'admin_ssu/users/user_create.html'
     success_url = reverse_lazy('admin_ssu:user_view')
+    permission_required = 'auth.add_user'
     
 
-class UserEditView(LoginRequiredMixin, UpdateView):
+class UserEditView(LoginRequiredMixin,PermissionRequiredMixin, UpdateView):
     model = User
     form_class = forms.CustomUserEditForm
     # form_class = UserChangeForm
     template_name = 'admin_ssu/users/user_edit.html'
     success_url = reverse_lazy('admin_ssu:user_view')
+    permission_required = 'auth.change_user'
     
 
-class UserDeleteView(LoginRequiredMixin, DeleteView):
+class UserDeleteView(LoginRequiredMixin,PermissionRequiredMixin, DeleteView):
     model = User
     # template_name = 'admin_ssu/users/user_confirm_delete.html'
     success_url = reverse_lazy('admin_ssu:user_view')
+    permission_required = 'auth.delete_user'
     
 
-class UserDetailView(LoginRequiredMixin,DetailView):
+class UserDetailView(LoginRequiredMixin,PermissionRequiredMixin,DetailView):
     model = User
     template_name = 'admin_ssu/users/user_detail.html'
     context_object_name = 'user'
+    permission_required = 'auth.view_user'
     
 #fin usuarios
 
 # Grupos
-class GroupListView(LoginRequiredMixin,ListView):
+class GroupListView(LoginRequiredMixin,PermissionRequiredMixin,ListView):
     model = Group
     template_name = 'admin_ssu/groups/group_list.html'
     context_object_name = 'groups'
     paginate_by = 10
+    permission_required = 'auth.view_group'
 
     
-class GroupCreateView(LoginRequiredMixin,CreateView):
+class GroupCreateView(LoginRequiredMixin,PermissionRequiredMixin,CreateView):
     model = Group
     template_name = 'admin_ssu/groups/group_add_edit.html'
     form_class = forms.GroupForm
     success_url = reverse_lazy('admin_ssu:group_list')
+    permission_required = 'auth.add_group'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -129,11 +136,12 @@ class GroupCreateView(LoginRequiredMixin,CreateView):
         return context
     
 
-class GroupUpdateView(LoginRequiredMixin, UpdateView):
+class GroupUpdateView(LoginRequiredMixin,PermissionRequiredMixin, UpdateView):
     model = Group
     template_name = 'admin_ssu/groups/group_add_edit.html'
     form_class = forms.GroupForm
     success_url = reverse_lazy('admin_ssu:group_list')
+    permission_required = 'auth.change_group'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -151,7 +159,8 @@ class GroupUpdateView(LoginRequiredMixin, UpdateView):
         return context
     
 
-class GroupDeleteView(LoginRequiredMixin, DeleteView):
+class GroupDeleteView(LoginRequiredMixin,PermissionRequiredMixin, DeleteView):
     model = Group
     # template_name = 'admin_ssu/users/user_confirm_delete.html'
     success_url = reverse_lazy('admin_ssu:group_list')
+    permission_required = 'auth.delete_group'

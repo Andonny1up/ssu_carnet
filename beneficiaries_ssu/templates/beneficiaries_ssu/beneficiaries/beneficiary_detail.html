@@ -24,6 +24,7 @@
                         <i class="fa fa-user-plus"></i>Agregar Dependiente
                     </a>
                     {% endif %}
+                    <a href="{% url "admin_ssu:bene_ssu:b_c_list" beneficiary.id %}" class="btn btn-orange btn-sm"> <i class="fa fa-drivers-license"></i> Carnets</a>
                 </div>
             </h1>
         </div>
@@ -164,7 +165,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-gray" data-bs-dismiss="modal">Cancelar</button>
-        <form action="{% url 'admin_ssu:bene_ssu:toggle_b_active' user.id %}" method="POST" id="deleteForm">
+        <form action="{% url 'admin_ssu:bene_ssu:toggle_b_active' beneficiary.id %}" method="POST" id="deleteForm">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger">Confirmar Baja</button>
         </form>
@@ -185,7 +186,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-gray" data-bs-dismiss="modal">Cancelar</button>
-        <form action="{% url 'admin_ssu:bene_ssu:toggle_b_active' user.id %}" method="POST" id="deleteForm">
+        <form action="{% url 'admin_ssu:bene_ssu:toggle_b_active' beneficiary.id %}" method="POST" id="deleteForm">
             {% csrf_token %}
             <button type="submit" class="btn btn-success">Confirmar Alta</button>
         </form>
