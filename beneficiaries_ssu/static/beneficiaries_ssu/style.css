@@ -1,0 +1,284 @@
+:root{
+    --ssu-primary-color: #5E053D;
+    --ssu-primary-color-light: #701256;
+
+    --ssu-secondary-color: #2B373D;
+    --ssu-dark-color: #0A1728;
+    --ssu-gray-color: #777777;
+    --ssu-light-color: #FFF;
+
+    /* color carnets */
+    --ssu-carnet-color-1: #d30303;
+}
+*{
+    box-sizing: border-box;
+}
+body{
+    background-color: rgba(77, 77, 77, 0.1);
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+header .bg-ssu{
+    background-color: var(--ssu-light-color);
+    color: var(--ssu-primary-color);
+    padding-left: 2rem;
+    padding-right: 2rem;
+    border-bottom: 0.1rem solid #ccc;
+}
+header .bg-ssu .nav-link{
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--ssu-primary-color);
+}
+header .bg-ssu  .navbar-toggler{
+    background-color: var(--ssu-primary-color);
+}
+main{
+    padding-top: 10rem;
+    padding-bottom: 5rem;
+    min-height: 100vh;
+}
+main .card-body{
+    padding: 4rem;
+}
+main .dni-container-form{
+    display: flex;
+}
+.dni-container{
+    padding-left: 2rem;
+    width: 100%;
+}
+.input-container label{
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+.input-container input{
+    font-size: 1.5rem;
+}
+.input-container .helper{
+    font-size: 0.8rem;
+    color: var(--ssu-gray-color);
+
+}
+main .icon-consul-container{
+    padding: 0.5rem 1rem;
+    border: 1rem solid rgba(77, 77, 77, 0.2);
+    border-radius: 0.5rem;
+}
+main .icon-consul-container i{
+    font-size: 4rem;
+    color: rgba(77, 77, 77, 0.2);
+}
+.heading{
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--ssu-primary-color);
+
+}
+.subheading {
+    font-size: 0.9rem;
+    color: var(--ssu-gray-color);
+    margin-bottom: 2rem;
+}
+.btn-lg-ssu-primary{
+    width: 100%;
+    background-color: var(--ssu-primary-color);
+    color: var(--ssu-light-color);
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+}
+.btn-lg-ssu-primary:hover{
+    background-color: var(--ssu-primary-color-light);
+    color: var(--ssu-light-color);
+}
+/* CARNETS INICIO */
+#card-carnet .carnet-container{
+
+}
+.card{
+}
+.carnet-ssu{
+    max-width: 750px;
+    min-width: 450px;
+    background-color: var(--ssu-light-color);
+    border-radius: 0.5rem;
+    box-shadow: 0 0.2rem 1rem rgba(0,0,0,0.2);
+    overflow: hidden;
+    margin: 0 auto;
+}
+.carnet-ssu .carnet-header{
+    min-height: 4rem;
+    border-bottom: 0.1rem solid var(--ssu-carnet-color-1);
+}
+.carnet-header-bg{
+    min-height: 4rem;
+    background-color:  var(--ssu-carnet-color-1);
+}
+/* carnet main */
+.carnet-main{
+    padding: 2rem;
+    padding-top: 4rem;
+}
+.c-back{
+    padding-top: 2rem;
+}
+.carnet-main-flex{
+    display: flex;
+    
+}
+.carnet-main .info-bene{
+    flex: 2;
+    height: 150px;
+    background-color: rgba(0,0,0,0.1);
+    padding: 2rem;
+    margin-right: 2rem;
+
+}
+.carnet-main .msg-carnet{
+    height: 150px;
+    background-color: rgba(0,0,0,0.1);
+    padding: 2rem;
+}
+.carnet-main .info-bene p, .carnet-main .msg-carnet p{
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+.carnet-main .figure {
+    position: relative;
+    border: 0.5rem solid black;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    display: flex; /* Utiliza flexbox para centrar la imagen */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    overflow: hidden;
+}
+.carnet-main .figure figcaption{
+    width: 100%;
+    font-size: 0.7rem;
+    background: black;
+    color: var(--ssu-light-color);
+    text-align: center;
+
+    position: absolute;
+    bottom: 0;
+}
+.carnet-main .figure img{
+    height: 100%; /* Cambia height: 100% a max-width: 100% */
+    width: auto;
+}
+.info_relative{
+    position: relative;
+}
+.info_relative figure{
+    position: absolute;
+    top: calc(50% - 50px);
+    right: 30px;
+}
+.info_relative figure img{
+    width: 100px;
+}
+.info_relative .c-text{
+    background-color: var(--ssu-carnet-color-1);
+    color: var(--ssu-light-color);
+    position: absolute;
+    top: calc(50% - 25px);
+    left: 2rem;
+    padding: 0.9rem;
+
+    border-radius: 0.5rem;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.date-info p{
+    text-align: center;
+    font-size: 0.8rem;
+    margin-bottom: 0rem;
+}
+.date-info hr{
+    margin: 0;
+}
+/* fin carnet main */
+.carnet-ssu .carnet-footer{
+    min-height: 2rem;
+    background-color: var(--ssu-carnet-color-1);
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border-top: 0.2rem solid var(--ssu-light-color);
+    border-top-right-radius: 50%;
+    border-top-left-radius: 50%;
+}
+.carnet-ssu .carnet-footer p{
+    font-size: 0.8rem;
+    color: var(--ssu-light-color);
+    text-align: center;
+    margin: 0;
+
+}
+/* CARNETS FINAL */
+footer{
+    background-color: var(--ssu-dark-color);
+    color: var(--ssu-light-color);
+    padding: 0;
+}
+footer .col-12{
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 1rem;
+
+}
+footer .wiget-title{
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+footer strong{
+    display: block;
+    font-size: 0.9rem;
+    color: var(--ssu-gray-color);
+}
+footer span{
+    display: block;
+    font-size: 0.9rem;
+}
+footer .footer-center{
+    font-size: 0.8rem;
+    color: var(--ssu-gray-color);
+}
+@media (max-width: 991px) {
+    header .bg-ssu .nav-link{
+        color: black;
+        text-transform: uppercase;
+    }
+}
+@media (max-width: 767px) {
+    main .card-body{
+        padding: 2rem;
+    }
+}
+@media (max-width: 765px) {
+    main .icon-consul-container{
+        display: none;
+    }
+    .dni-container{
+        padding-left: 0rem;
+    }
+}
+@media (max-width: 625px) {
+    .carnet-main .info-bene,.carnet-main .msg-carnet{
+        height: auto;
+    }
+    .carnet-main-flex{
+        flex-direction: column-reverse;
+        align-items: center;
+        gap: 1rem;
+    }
+}

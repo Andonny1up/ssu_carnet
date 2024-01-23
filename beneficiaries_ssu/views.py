@@ -11,7 +11,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import TypeBeneficiary , Beneficiary, Carnet
 
-from .forms import TypeBeneficiaryForm, BeneficiaryForm, CarnetForm
+from .forms import TypeBeneficiaryForm, BeneficiaryForm, CarnetForm, BeneficiarySearchForm
 from django import forms
 
 from django.db.models import Q
@@ -372,3 +372,31 @@ def deactivate_carnet(request, pk):
 
     messages.success(request, 'El carnet ha sido desactivado.')
     return redirect(reverse('admin_ssu:bene_ssu:b_c_list', args=[carnet.beneficiary.id]))
+
+
+class BeneficiarySearchView(View):
+    def get(self, request, *args, **kwargs):
+        form = BeneficiarySearchForm()
+        return render(request, 'beneficiaries_ssu/carnets/beneficiary_carnet_search.html', {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = BeneficiarySearchForm(request.POST)
+        if form.is_valid():
+            dni = form.cleaned_data['dni']
+            birth_date = form.cleaned_data['birth_date']
+            beneficiary = Beneficiary.objects.filter(dni=dni, date_of_birth=birth_date).first()
+            print("beneficiary: ", beneficiary)
+            if beneficiary:
+                active_carnet = Carnet.objects.filter(beneficiary=beneficiary, is_active=True, date_of_expiration__gte=timezone.now().date()).order_by('-date_of_issue').first()
+                print("active_carnet: ", active_carnet)
+                if active_carnet:
+                    message = 'El beneficiario tiene un carnet activo.'
+                else:
+                    message = 'El beneficiario no tiene un carnet activo.'
+                    active_carnet = None
+            else:
+                message = 'No se encontró un beneficiario con los datos proporcionados.'
+                active_carnet = None
+                
+            return render(request, 'beneficiaries_ssu/carnets/beneficiary_carnet_search.html', {'form': form, 'message': message,'active_carnet': active_carnet})
+        return render(request, 'beneficiaries_ssu/carnets/beneficiary_carnet_search.html', {'form': form})

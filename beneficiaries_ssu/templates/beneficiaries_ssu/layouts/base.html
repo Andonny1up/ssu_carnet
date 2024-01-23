@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+        
+        {% endblock title %}
+    </title>
+    <link rel="stylesheet" href="{% static 'admin_ssu/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- reference CSS file -->
+    {% block css %}
+    
+    {% endblock css %}
+</head>
+<body>
+    <header>
+        {% include "beneficiaries_ssu/layouts/header.html" %}
+    </header>
+    <main>
+        {% block content %}
+        
+        {% endblock content %}
+    </main>
+    <footer>
+        {% include "beneficiaries_ssu/layouts/footer.html" %}
+    </footer>
+    <script src="{% static 'admin_ssu/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    {% block js %}
+    
+    {% endblock js %}
+</body>
+</html>

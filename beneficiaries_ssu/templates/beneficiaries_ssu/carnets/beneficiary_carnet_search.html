@@ -1,0 +1,113 @@
+{% extends "beneficiaries_ssu/layouts/base.html" %}
+{% load static %}
+{% block title %} Seguro Social Universitario {% endblock title %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'beneficiaries_ssu/style.css' %}">
+{% endblock css %}
+{% block content %}
+<div class="container-md container-fluid">
+    <div class="row">
+        <div class="col">
+            {% if active_carnet %}
+                <div id="card-carnet" class="card">
+                    <div class="card-body table-responsive">
+                        <div class="carnet-container " class="table">
+                            <div class="carnet-ssu">
+                                <div class="carnet-header">
+                                    
+                                </div>
+                                <div class="info_relative">
+                                    <div class="c-text">CARNET DE BENEFICIARIO</div>
+                                    <figure>
+                                        <img src="{% static 'beneficiaries_ssu/images/logo_ssu_N2.png' %}" alt="Logo SSU">
+                                    </figure>
+                                </div>
+                                <div class="carnet-main carnet-main-flex">
+                                    <div class="info-bene">
+                                        <p><strong>Nombre:</strong> {{active_carnet.beneficiary.first_name|upper}} {{active_carnet.beneficiary.last_name|upper}}</p>
+                                        <p><strong>Matricula:</strong> {{active_carnet.beneficiary.m_code}}</p>
+                                        <p><strong>Grupo:</strong> {{active_carnet.beneficiary.blood_group}}</p>
+                                    </div>
+                                    <div class="figure">
+                                        <img src="{{active_carnet.beneficiary.photo.url}}" alt="Foto del beneficiario">
+                                        <figcaption>{{active_carnet.beneficiary.m_code}}</figcaption>
+                                    </div>
+                                    
+                                    
+                                </div>
+                                <div class="carnet-footer">
+                                    <p>SEGURO SOCIAL UNIVERSITARIO</p>
+                                    <p>Trinidad-Beni-Bolivia</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carnet-container mt-5">
+                            <div class="carnet-ssu">
+                                <div class="carnet-header-bg">
+                                    
+                                </div>
+                                <div class="carnet-main c-back">
+                                    <div class="d-flex justify-content-evenly mb-2">
+                                        <div class="date-info">
+                                            <p>{{ active_carnet.date_of_issue }}</p>
+                                            <hr>
+                                            <p><strong>Fecha de Emisión</strong></p>
+                                        </div>
+                                        <div class="date-info">
+                                            <p>{{ active_carnet.date_of_expiration }}</p>
+                                            <hr>
+                                            <p><strong>Fecha de Vencimiento</strong></p>
+                                        </div>
+                                    </div>
+                                    <div class="msg-carnet">
+                                        <p>El presente carnet le acredita ser asegurado beneficiario de esta institución.
+                                            Para toda consulta es imprescindible la presentación de este carnet. Posterior retiro
+                                            del funcionario asegurado tiene validez de 2 meses
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="carnet-footer">
+                                    <p>SEGURO SOCIAL UNIVERSITARIO</p>
+                                    <p>Trinidad-Beni-Bolivia</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end mt-5">
+                            <a href="" class="btn btn-primary">
+                                <i class="fa fa-refresh"></i> Volver a Consultar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ... otros campos del carnet ... -->
+            {% else %}
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="heading text-center">CONSULTA CARNET AL SSU</h1>
+                    <p class="subheading text-center">VERIFICA SI ESTAS HABILITADO(A) </p>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <div class="dni-container-form">
+                            <figure class="icon-consul-container">
+                                <i class="fa fa-user"></i>
+                            </figure>
+                            <div class="dni-container input-container">
+                                {{ form.dni.label_tag }} {{ form.dni }}
+                                <p class="helper">Escribe tu Carnet de Identidad.</p>
+                            </div>
+                        </div>
+                        <p class="input-container">
+                            {{ form.birth_date.label_tag }} {{ form.birth_date }}
+                        </p>
+                        <button type="submit" class="btn btn-lg-ssu-primary">Consultar</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+            
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

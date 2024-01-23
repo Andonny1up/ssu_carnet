@@ -34,3 +34,8 @@ class CarnetForm(forms.ModelForm):
             'date_of_issue': forms.DateInput(attrs={'class':'form-control', 'type': 'date'}),
             'date_of_expiration': forms.DateInput(attrs={'class':'form-control', 'type': 'date'}),
         }
+        
+
+class BeneficiarySearchForm(forms.Form):
+    dni = forms.CharField(max_length=15,label="Documento de identidad", widget=forms.TextInput(attrs={'class': 'form-control'}))
+    birth_date = forms.DateField(label="Fecha de nacimiento",widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}))
