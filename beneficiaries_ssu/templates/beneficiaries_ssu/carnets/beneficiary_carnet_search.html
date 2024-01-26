@@ -44,7 +44,15 @@
                         <div class="carnet-container mt-5">
                             <div class="carnet-ssu">
                                 <div class="carnet-header-bg">
-                                    
+                                    {% if active_carnet.beneficiary.beneficiary_d %}
+                                        <div class="carnet-header-bg-img">
+                                            <img src="{{active_carnet.beneficiary.beneficiary_d.photo.url}}" alt="Foto del beneficiario">
+                                        </div>
+                                        <div class="carnet-header-bg-text">
+                                            <p><strong>Nombre:</strong> {{active_carnet.beneficiary.beneficiary_d.first_name|upper}} {{active_carnet.beneficiary.beneficiary_d.last_name|upper}}</p>
+                                            <p><strong>Matricula:</strong> {{active_carnet.beneficiary.beneficiary_d.m_code}}</p>
+                                        </div>
+                                    {% endif %}
                                 </div>
                                 <div class="carnet-main c-back">
                                     <div class="d-flex justify-content-evenly mb-2">
@@ -82,6 +90,11 @@
                 
                 <!-- ... otros campos del carnet ... -->
             {% else %}
+            {% if message %}
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>
+            {% endif %}
             <div class="card">
                 <div class="card-body">
                     <h1 class="heading text-center">CONSULTA CARNET AL SSU</h1>

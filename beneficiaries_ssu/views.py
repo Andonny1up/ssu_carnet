@@ -384,7 +384,7 @@ class BeneficiarySearchView(View):
         if form.is_valid():
             dni = form.cleaned_data['dni']
             birth_date = form.cleaned_data['birth_date']
-            beneficiary = Beneficiary.objects.filter(dni=dni, date_of_birth=birth_date).first()
+            beneficiary = Beneficiary.objects.filter(dni=dni, date_of_birth=birth_date, is_active=True).first()
             print("beneficiary: ", beneficiary)
             if beneficiary:
                 active_carnet = Carnet.objects.filter(beneficiary=beneficiary, is_active=True, date_of_expiration__gte=timezone.now().date()).order_by('-date_of_issue').first()
