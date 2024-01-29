@@ -16,6 +16,7 @@
             </h1>
             <div class="card mb-3">
                 <div class="card-body">
+                    <p>BENEFICIARIO: {{beneficiary.first_name|upper}} {{beneficiary.last_name|upper}} </p>
                     {% if active_carnet %}
                     <div class="d-flex justify-content-end">
                         {% if perms.beneficiaries_ssu.delete_carnet %}
@@ -37,10 +38,14 @@
                         <p class="text-danger">Este beneficiario no tiene carnet activo</p>
                     </div>
                     <div class="d-flex justify-content-center mb-5">
-                        {% if perms.beneficiaries_ssu.add_carnet %}
-                        <a href="{% url 'admin_ssu:bene_ssu:b_c_create' beneficiary.id %}" class="btn btn-primary">
-                            <i class="fa fa-address-card"></i> Generar Carnet
-                        </a>
+                        {% if beneficiary.is_active %}
+                            {% if perms.beneficiaries_ssu.add_carnet %}
+                            <a href="{% url 'admin_ssu:bene_ssu:b_c_create' beneficiary.id %}" class="btn btn-primary">
+                                <i class="fa fa-address-card"></i> Generar Carnet
+                            </a>
+                            {% endif %}
+                        {% else %}
+                            <p class="text-danger">Este beneficiario no esta activo</p>
                         {% endif %}
                     </div>
                     
