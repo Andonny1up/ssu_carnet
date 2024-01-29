@@ -197,6 +197,12 @@ def toggle_beneficiary_active(request, pk):
     beneficiary.is_active = not beneficiary.is_active
     beneficiary.save()
 
+    # Encontrar los dependientes
+    dependents = Beneficiary.objects.filter(beneficiary_d=beneficiary.id)
+    for dependent in dependents:
+        dependent.is_active = beneficiary.is_active
+        dependent.save()
+
     if beneficiary.is_active:
         messages.success(request, 'El beneficiario ha sido activado.')
     else:
