@@ -129,6 +129,7 @@ main .icon-consul-container i{
     height: 50px;
     margin-right: 1rem;
     border: 0.2rem solid black;
+    overflow: hidden;
 }
 .carnet-header-bg-img img{
     width: 100%;
@@ -183,9 +184,9 @@ main .icon-consul-container i{
     width: 150px;
     height: 150px;
     overflow: hidden;
-    display: flex; /* Utiliza flexbox para centrar la imagen */
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center; /* Centra verticalmente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
     overflow: hidden;
 }
 .carnet-main .figure figcaption{
