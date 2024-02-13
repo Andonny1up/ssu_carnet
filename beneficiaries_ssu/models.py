@@ -1,3 +1,4 @@
+from datetime import date
 from django.db import models
 from django.conf import settings
 # Create your models here.
@@ -90,6 +91,11 @@ class Beneficiary(models.Model):
     
     def __str__(self):
         return self.first_name.upper() + ' ' + self.paternal_last_name.upper()
+    
+    def age(self):
+        today = date.today()
+        born = self.date_of_birth
+        return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
     
 
 # carnet

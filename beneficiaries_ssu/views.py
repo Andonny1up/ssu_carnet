@@ -107,6 +107,7 @@ class BeneficiaryListView(LoginRequiredMixin, PermissionRequiredMixin, ListView)
         context = super().get_context_data(**kwargs)
         context['title'] = 'Beneficiarios'
         context['search'] = self.request.GET.get('search', '')
+        context['total_records'] = Beneficiary.objects.all().count()
         return context
 
 
@@ -164,6 +165,10 @@ class BeneficiaryEditView(LoginRequiredMixin, PermissionRequiredMixin, UpdateVie
         form.initial['date_of_birth'] = dob.strftime('%Y-%m-%d')
         form.fields['date_of_birth'].widget = forms.DateInput(attrs={'class':'form-control','type': 'date'})
         
+        # fecha iinscripción
+        doi = form.initial['registration_date']
+        form.initial['registration_date'] = doi.strftime('%Y-%m-%d')
+        form.fields['registration_date'].widget = forms.DateInput(attrs={'class':'form-control','type': 'date'})
         # Si el beneficiario tiene un 'beneficiary_d', ocultamos el campo 'type_beneficiary'
         if self.object.beneficiary_d:
             form.fields['type_beneficiary'].widget = forms.HiddenInput()
@@ -234,7 +239,8 @@ class DependentCreateView(LoginRequiredMixin,PermissionRequiredMixin, CreateView
         
         # generar  m_code 
         initials_first_name = beneficiary.first_name[0:1].upper()
-        initials_last_name = ''.join([x[0].upper() for x in beneficiary.last_name.split()])
+        initials_last_name = beneficiary.paternal_last_name[0:1].upper() + beneficiary.maternal_last_name[0:1].upper()
+        # initials_last_name = ''.join([x[0].upper() for x in beneficiary.last_name.split()])
         full_initials = initials_last_name + initials_first_name
         birth_day = beneficiary.date_of_birth.strftime('%d')
         birth_month = beneficiary.date_of_birth.strftime('%m')

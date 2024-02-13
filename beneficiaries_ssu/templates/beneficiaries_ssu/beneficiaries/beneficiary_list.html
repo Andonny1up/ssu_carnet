@@ -7,9 +7,9 @@
         <div class="col">
             <h1 class="heading">
                 <i class="fa fa-user-plus"></i> {{ title }}
-                {% if perms.beneficiaries_ssu.add_beneficiary %}
+                {% comment %} {% if perms.beneficiaries_ssu.add_beneficiary %}
                 <a href="{% url "admin_ssu:bene_ssu:b_create" %}" class="btn btn-primary"><i class="fa fa-plus-circle"></i>Nuevo</a>
-                {% endif %}
+                {% endif %} {% endcomment %}
             </h1>
             
         </div>
@@ -23,7 +23,21 @@
                             <input class="form-control" type="text" name="search" placeholder="Buscar Beneficiario" value="{{ search }}">
                         </form>
                     </div>
-                    
+                    {% comment %} <div>
+                        <div class="alert alert-info" role="alert">
+                            <i class="fa fa-info-circle"></i> <strong>Información:</strong> En esta sección se listan todos los beneficiarios registrados en el sistema.
+                        </div>
+                    </div> {% endcomment %}
+                    <div class="bar-blue">
+                        {% if perms.beneficiaries_ssu.add_beneficiary %}
+                            <a href="{% url "admin_ssu:bene_ssu:b_create" %}" class="btn-sq-success">
+                                <i class="fa fa-user-plus"></i>
+                                <span>Nuevo</span>
+                            </a>
+                        {% endif %}
+                            <p class="badge-success">NRO DE REGISTRO(S): {{ total_records }}</p>
+                        
+                    </div>
                     <div class="table-responsive">
                         <div class="col-12">
                         
@@ -31,8 +45,9 @@
                                 <thead>
                                     <tr >
                                         <th>N#</th>
+                                        <th>Documento</th>
                                         <th>Nombre Completo</th>
-                                        <th>N# Carnet</th>
+                                        <th>Edad (Años)</th>
                                         <th>Tipo Beneficiario</th>
                                         <th>Estado</th>
                                         <th>Acciones</th>
@@ -45,8 +60,15 @@
                                     {% for bene in beneficiaries %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{ bene.first_name }} {{ bene.last_name }}</td>
-                                        <td>{{ bene.dni }}</td>
+                                        <td>{{ bene.document_type }}: {{ bene.dni }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center" style="height: 100%">
+                                                <i class="fa fa-check-circle-o b-check"></i>
+                                                {{ bene.first_name }}
+                                                {{ bene.paternal_last_name }} {{ bene.maternal_last_name }}
+                                            </div>
+                                        </td>
+                                        <td>{{ bene.age }}</td>
                                         <td>
                                             {% if bene.type_beneficiary %}
                                                 {{ bene.type_beneficiary.name }}
@@ -177,6 +199,57 @@
     }
     .search-div input {
         width: 15rem;
+    }
+    .bar-blue{
+        background-color: #0d6efd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .btn-sq-success{
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 0.3rem 1rem;
+        color: white;
+        background-color: #03d31b;
+        
+        border: none;
+        text-align: center;
+        text-decoration: none;
+        font-size: 16px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+    }
+    .btn-sq-success span{
+        font-size: 0.7rem;
+        font-weight: bold;
+    }
+    .badge-success{
+        color: white;
+        background-color: #03d31b;
+
+        font-size: 0.8rem;
+        {% comment %} font-weight: bold; {% endcomment %}
+
+        padding: 0.3rem 1rem;
+        margin: 0.4rem;
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+        border-radius: 1rem;
+    }
+    #table_users tr{
+        font-size: 0.9rem;
+    }
+    #table_users tr th{
+        font-size: 0.9rem;
+        font-weight: 200;
+    }
+    .b-check{
+        color: #03d31b;
+        font-size: 1.4rem;
+        margin-right: 0.5rem;
     }
     @media (max-width: 767px) {
         .pagi-hidden{

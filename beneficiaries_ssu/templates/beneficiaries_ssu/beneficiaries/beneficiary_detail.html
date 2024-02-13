@@ -50,7 +50,7 @@
                     </div>
                     <div class="text-center">
                         <h4>Nombre Del Beneficiario:</h4>
-                        <p class="p-username">{{ beneficiary.first_name }} {{ beneficiary.last_name }}</p>
+                        <p class="p-username">{{ beneficiary.first_name|upper }} {{ beneficiary.paternal_last_name|upper }} {{ beneficiary.maternal_last_name|upper }}</p>
                     </div>
                 </div>
             </div>
@@ -71,12 +71,17 @@
                     {% endif %}
                     <div class="panel-view">
                         <p>Nombre Completo</p>
-                        <p>{{ beneficiary.first_name |upper }} {{ beneficiary.last_name |upper }}</p>
+                        <p>{{ beneficiary.first_name|upper }} {{ beneficiary.paternal_last_name|upper }} {{ beneficiary.maternal_last_name|upper }}
+
+                            {% if beneficiary.married_last_name %}
+                                {{ beneficiary.married_last_name|upper }}
+                            {% endif %}
+                        </p>
                         <hr>
                     </div>
                     <div class="panel-view">
-                        <p>C.I</p>
-                        <p>{{ beneficiary.dni }}</p>
+                        <p>Documento</p>
+                        <p>{{ beneficiary.document_type }}: {{ beneficiary.dni }}</p>
                         <hr>
                     </div>
                     <div class="panel-view">
@@ -86,7 +91,17 @@
                     </div>
                     <div class="panel-view">
                         <p>Fecha de Nacimiento</p>
-                        <p>{{ beneficiary.date_of_birth }}</p>
+                        <p>{{ beneficiary.date_of_birth }} (Edad: {{ beneficiary.age }})</p>
+                        <hr>
+                    </div>
+                    <div class="panel-view">
+                        <p>Genero</p>
+                        <p>{{ beneficiary.get_gender_display }}</p>
+                        <hr>
+                    </div>
+                    <div class="panel-view">
+                        <p>Estado civil</p>
+                        <p>{{ beneficiary.get_marital_status_display }}</p>
                         <hr>
                     </div>
                     {% if beneficiary.type_beneficiary %}
@@ -98,7 +113,12 @@
                     {% endif %}
                     <div class="panel-view">
                         <p>Grupo Sanguineo</p>
-                        <p>{{ beneficiary.blood_group }}</p>
+                        <p>{{ beneficiary.blood_group }}{{beneficiary.rh_factor}}</p>
+                        <hr>
+                    </div>
+                    <div class="panel-view">
+                        <p>Fecha de inscripción</p>
+                        <p>{{ beneficiary.registration_date }}</p>
                         <hr>
                     </div>
                     <div class="panel-view">
