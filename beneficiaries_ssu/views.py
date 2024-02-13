@@ -97,7 +97,7 @@ class BeneficiaryListView(LoginRequiredMixin, PermissionRequiredMixin, ListView)
         search_query = self.request.GET.get('search', '')
         if search_query:
             queryset = queryset.annotate(
-                full_name=Concat('first_name', V(' '), 'last_name')
+                full_name=Concat('first_name', V(' '), 'paternal_last_name', V(' '), 'maternal_last_name')
             ).filter(
                 Q(full_name__icontains=search_query) | Q(dni__icontains=search_query)
             )
@@ -128,7 +128,8 @@ class BeneficiaryCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateV
         
         # generar  m_code 
         initials_first_name = beneficiary.first_name[0:1].upper()
-        initials_last_name = ''.join([x[0].upper() for x in beneficiary.last_name.split()])
+        initials_last_name = beneficiary.paternal_last_name[0:1].upper() + beneficiary.maternal_last_name[0:1].upper()
+        # initials_last_name = ''.join([x[0].upper() for x in beneficiary.last_name.split()])
         full_initials = initials_last_name + initials_first_name
         birth_day = beneficiary.date_of_birth.strftime('%d')
         birth_month = beneficiary.date_of_birth.strftime('%m')

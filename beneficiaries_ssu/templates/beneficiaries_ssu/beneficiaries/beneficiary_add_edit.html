@@ -13,20 +13,16 @@
         <div class="col-12 col-md-5 col-lg-4 order-md-2 mb-2">
             <div class="card">
                 <div class="card-body p-5">
-                    <div class="row">
-                        <div class="col">
-                            <div class="d-flex justify-content-center">
-                                <img src="{{ request.scheme }}://{{ request.get_host }}{{ form.photo.value.url }}" alt="" class="img-fluid">
-                            </div>
-                            <p>
-                                {{ form.photo.label_tag }} {{ form.photo }}
-                                {{ form.photo.errors }}
-                                {% if form.photo.help_text %}
-                                    <span class="form-text text-muted">{{ form.photo.help_text }}</span>
-                                {% endif %}
-                            </p>
-                        </div>
+                    <div class="d-flex justify-content-center">
+                        <img src="{{ request.scheme }}://{{ request.get_host }}{{ form.photo.value.url }}" alt="" class="img-fluid">
                     </div>
+                    <p>
+                        {{ form.photo.label_tag }} {{ form.photo }}
+                        {{ form.photo.errors }}
+                        {% if form.photo.help_text %}
+                            <span class="form-text text-muted">{{ form.photo.help_text }}</span>
+                        {% endif %}
+                    </p>
                 </div>
             </div>
         </div>
@@ -48,7 +44,7 @@
                                 </p>
                             {% else %}
                                 {% if not field is form.photo %}
-                                <p>
+                                <p id="container_{{field.name}}">
                                     {{ field.label_tag }} {{ field }}
                                     {{ field.errors }}
                                     {% if field.help_text %}
@@ -73,8 +69,15 @@
 {% endblock %}
 {% block css %}
 <style>
+textarea{
+    width: 100%;
+    padding: 0.2rem;
+    border: 0.1rem solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
 .form-template p{
-
+    {% comment %} display: inline-block; {% endcomment %}
 }
 .form-template p label{
     display: block;
@@ -107,7 +110,14 @@ ul li{
 
     list-style: none;
 }
-
+.RadioSelect div{
+    display: inline-block;
+    margin-right: 15px;
+}
+{% comment %} #container_first_name, #container_middle_name,#container_paternal_last_name,
+#container_maternal_last_name,#container_married_last_name{
+    display: inline-block;
+} {% endcomment %}
 /* The switch - the box around the slider */
 .switch {
   position: relative;

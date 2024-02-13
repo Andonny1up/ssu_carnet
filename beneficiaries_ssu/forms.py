@@ -13,15 +13,27 @@ class TypeBeneficiaryForm(forms.ModelForm):
 class BeneficiaryForm(forms.ModelForm):
     class Meta:
         model = Beneficiary
-        fields = ['first_name','last_name','dni','photo','date_of_birth','address','blood_group','type_beneficiary']
-        labels = {'first_name':'Nombre(s)','last_name':'Apellidos','dni':'C.I.','photo':'Foto','date_of_birth':'Fecha de Nacimiento','address':'Dirección','blood_group':'Grupo Sanguineo','type_beneficiary':'Tipo de Beneficiario'}
+        # fields = '__all__'
+        fields = ['first_name','middle_name','paternal_last_name','maternal_last_name','married_last_name',
+                  'employer_type', 'employer_id','document_type','dni','place_of_issue',
+                  'gender','marital_status','photo',
+                  'date_of_birth','address','blood_group','rh_factor',
+                  'registration_date','type_beneficiary','observations']
+        
+        labels = {'first_name':'Nombre','middle_name':'Segundo Nombre','paternal_last_name':'Apellido Paterno','maternal_last_name ':'Apellido Materno','married_last_name':'Apellido de Casado',
+                  'dni':'N# Documento','photo':'Foto','date_of_birth':'Fecha de Nacimiento','address':'Dirección','blood_group':'Grupo Sanguineo','type_beneficiary':'Tipo de Beneficiario'}
+        
         widgets = {'first_name':forms.TextInput(attrs={'class':'form-control'}),
-                   'last_name':forms.TextInput(attrs={'class':'form-control'}),
+                   'employer_type': forms.RadioSelect(attrs={'class': 'RadioSelect'}),
+                   'document_type': forms.RadioSelect(attrs={'class': 'RadioSelect'}),
                    'dni':forms.TextInput(attrs={'class':'form-control'}),
+                   'place_of_issue':forms.TextInput(attrs={'class':'form-control'}),
+                   'gender': forms.RadioSelect(attrs={'class': 'RadioSelect'}),
+                   'marital_status': forms.RadioSelect(attrs={'class': 'RadioSelect'}),
                    'photo':forms.FileInput(attrs={'class':'form-control'}),
                    'date_of_birth':forms.DateInput(attrs={'class':'form-control', 'type':'date'}),
                    'address':forms.TextInput(attrs={'class':'form-control'}),
-                   'blood_group':forms.TextInput(attrs={'class':'form-control'}),
+                   'registration_date':forms.DateInput(attrs={'class':'form-control', 'type':'date'}),
                    'type_beneficiary':forms.Select(attrs={'class':'form-control'}),
         }
         
