@@ -72,7 +72,7 @@ class Beneficiary(models.Model):
     photo = models.ImageField('foto',upload_to='beneficiaries')
     date_of_birth = models.DateField('fecha de nacimiento')
     address = models.CharField('direccion',max_length=100,null=True,blank=True)
-    m_code = models.CharField('matricula',max_length=10,unique=True)
+    m_code = models.CharField('matricula',max_length=20,unique=True)
     
     blood_group = models.CharField('grupo sanguíneo', max_length=2, choices=BLOOD_GROUP_CHOICES)
     rh_factor = models.CharField('factor sanguíneo', max_length=1, choices=RH_FACTOR_CHOICES)
