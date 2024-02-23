@@ -135,6 +135,15 @@ class BeneficiaryCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateV
         birth_day = beneficiary.date_of_birth.strftime('%d')
         birth_month = beneficiary.date_of_birth.strftime('%m')
         birth_year = beneficiary.date_of_birth.strftime('%y')
+
+        if beneficiary.gender == 'F':
+            print('beneficiary gender: ', beneficiary.gender)
+            if birth_month[:1] == '0':
+                birth_month = '5' + birth_month[1:]
+            else:
+                birth_month = '6' + birth_month[1:]
+            print('birth_month: ', birth_month)
+
         
         m_code = birth_year + '-' + birth_month + birth_day + '-' + full_initials
         
@@ -245,6 +254,14 @@ class DependentCreateView(LoginRequiredMixin,PermissionRequiredMixin, CreateView
         birth_day = beneficiary.date_of_birth.strftime('%d')
         birth_month = beneficiary.date_of_birth.strftime('%m')
         birth_year = beneficiary.date_of_birth.strftime('%y')
+
+        if beneficiary.gender == 'F':
+            print('beneficiary gender: ', beneficiary.gender)
+            if birth_month[:1] == '0':
+                birth_month = '5' + birth_month[1:]
+            else:
+                birth_month = '6' + birth_month[1:]
+            print('birth_month: ', birth_month)
         
         m_code = birth_year + '-' + birth_month + birth_day + '-' + full_initials
         
