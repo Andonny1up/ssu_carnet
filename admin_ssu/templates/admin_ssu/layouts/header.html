@@ -77,6 +77,14 @@
                         <i class="fa fa-sliders"></i> Opcion Beneficiarios
                         </a>
                         <ul class="dropdown-menu">
+                            
+                            {% if perms.beneficiaries_ssu.view_instution %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'admin_ssu:bene_ssu:inst_list' %}">
+                                    <i class="fa fa-building"></i> Instituciones
+                                </a>
+                            </li>
+                            {% endif %}
                             {% if perms.beneficiaries_ssu.view_typebeneficiary %}
                             <li>
                                 <a class="dropdown-item" href="{% url 'admin_ssu:bene_ssu:type_b_list' %}">
@@ -84,6 +92,7 @@
                                 </a>
                             </li>
                             {% endif %}
+                            
                         </ul>
                     </li>
                     {% endif %}

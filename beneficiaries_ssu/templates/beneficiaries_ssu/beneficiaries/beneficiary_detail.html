@@ -79,6 +79,13 @@
                         </p>
                         <hr>
                     </div>
+                    {% if beneficiary.institution %}
+                    <div class="panel-view">
+                        <p>Institución</p>
+                        <p>{{ beneficiary.institution|upper }}</p>
+                        <hr>
+                    </div>
+                    {% endif %}
                     <div class="panel-view">
                         <p>Documento</p>
                         <p>{{ beneficiary.document_type }}: {{ beneficiary.dni }}</p>

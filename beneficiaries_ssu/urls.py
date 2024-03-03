@@ -8,7 +8,12 @@ urlpatterns = [
     path("type_beneficiaries/create/", views.TypeBeneficiaryCreateView.as_view(), name="type_b_create"),
     path("type_beneficiaries/edit/<int:pk>/", views.TypeBeneficiaryEditView.as_view(), name="type_b_edit"),
     path("type_beneficiaries/delete/<int:pk>/", views.TypeBeneficiaryDeleteView.as_view(), name="type_b_delete"),
-
+    # institution
+    path("institutions", views.InstitutionListView.as_view(), name="inst_list"),
+    path("institutions/create/", views.InstitutionCreateView.as_view(), name="inst_create"),
+    path("institutions/edit/<int:pk>/", views.InstitutionEditView.as_view(), name="inst_edit"),
+    path("institutions/delete/<int:pk>/", views.InstitutionDeleteView.as_view(), name="inst_delete"),
+    
     # beneficiaries
     path("beneficiaries", views.BeneficiaryListView.as_view(), name="b_list"),
     path("beneficiaries/create/", views.BeneficiaryCreateView.as_view(), name="b_create"),

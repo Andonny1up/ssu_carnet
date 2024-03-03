@@ -6,10 +6,10 @@
     <div class="row">
         <div class="col">
             <h1 class="heading">
-                <i class="fa fa-user-plus"></i> {{ title }}
-                {% comment %} {% if perms.beneficiaries_ssu.add_beneficiary %}
-                <a href="{% url "admin_ssu:bene_ssu:b_create" %}" class="btn btn-primary"><i class="fa fa-plus-circle"></i>Nuevo</a>
-                {% endif %} {% endcomment %}
+                <i class="fa fa-building"></i> {{ title }}
+                {% if perms.beneficiaries_ssu.add_institution %}
+                <a href="{% url "admin_ssu:bene_ssu:inst_create" %}" class="btn btn-primary"><i class="fa fa-plus-circle"></i>Nuevo</a>
+                {% endif %}
             </h1>
             
         </div>
@@ -20,24 +20,10 @@
                 <div class="card-body">
                     <div class="search-div">
                         <form action="" method="GET">
-                            <input class="form-control" type="text" name="search" placeholder="Buscar Beneficiario" value="{{ search }}">
+                            <input class="form-control" type="text" name="search" placeholder="Buscar" value="{{ search }}">
                         </form>
                     </div>
-                    {% comment %} <div>
-                        <div class="alert alert-info" role="alert">
-                            <i class="fa fa-info-circle"></i> <strong>Información:</strong> En esta sección se listan todos los beneficiarios registrados en el sistema.
-                        </div>
-                    </div> {% endcomment %}
-                    <div class="bar-blue">
-                        {% if perms.beneficiaries_ssu.add_beneficiary %}
-                            <a href="{% url "admin_ssu:bene_ssu:b_create" %}" class="btn-sq-success">
-                                <i class="fa fa-user-plus"></i>
-                                <span>Nuevo</span>
-                            </a>
-                        {% endif %}
-                            <p class="badge-success">NRO DE REGISTRO(S): {{ total_records }}</p>
-                        
-                    </div>
+                    
                     <div class="table-responsive">
                         <div class="col-12">
                         
@@ -45,65 +31,25 @@
                                 <thead>
                                     <tr >
                                         <th>N#</th>
-                                        <th>institución</th>
-                                        <th>Documento</th>
-                                        <th>Nombre Completo</th>
-                                        <th>Edad (Años)</th>
-                                        <th>Tipo Beneficiario</th>
-                                        <th>Estado</th>
+                                        <th>Institución</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody id="search_results" style="display: none;">
-
-                                </tbody>
-                                <tbody id="original_data">
-                                    {% for bene in beneficiaries %}
+                                <tbody>
+                                    {% for ints in institutions %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>
-                                            {% if bene.institution %}
-                                                {{ bene.institution|upper }}
-                                            {% else %}
-                                                Ninguna
-                                            {% endif %}
-
-                                        </td>
-                                        <td>{{ bene.document_type }}: {{ bene.dni }}</td>
-                                        <td>
-                                            <div class="d-flex align-items-center" style="height: 100%">
-                                                <i class="fa fa-check-circle-o b-check"></i>
-                                                {{ bene.first_name }}
-                                                {{ bene.paternal_last_name }} {{ bene.maternal_last_name }}
-                                            </div>
-                                        </td>
-                                        <td>{{ bene.age }}</td>
-                                        <td>
-                                            {% if bene.type_beneficiary %}
-                                                {{ bene.type_beneficiary.name }}
-                                            {% elif bene.beneficiary_d %}
-                                                Dependiente
-                                            {% else %}
-                                                Sin Tipo
-                                            {% endif %}
-                                        </td>
+                                        <td>{{ ints.name }}</td>
                                         <td class="text-center">
-                                            {% if bene.is_active %}
-                                                <span class="badge text-bg-success">Activo</span>
-                                            {% else %}
-                                                <span class="badge text-bg-danger">Inactivo</span>
+                                            {% if perms.beneficiaries_ssu.change_institution %}
+                                            <a href="{% url "admin_ssu:bene_ssu:inst_edit" ints.id %}" class="btn btn-primary btn-sm">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
                                             {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if perms.beneficiaries_ssu.change_beneficiary %}
-                                            <a href="{% url "admin_ssu:bene_ssu:b_detail" bene.id %}" class="btn btn-sm btn-warning"><i class="fa fa-eye"></i></a>
+                                            {% if perms.beneficiaries_ssu.delete_institution %}
+                                                <button class="btn btn-sm my-btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ ints.id }}" > <i class="fa fa-trash"></i></button>
                                             {% endif %}
-                                            {% if perms.beneficiaries_ssu.change_beneficiary %}
-                                            <a href="{% url "admin_ssu:bene_ssu:b_edit" bene.id %}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
-                                            {% endif %}
-                                            {% if perms.beneficiaries_ssu.delete_beneficiary %}
-                                            {% comment %} <a href="#" class="btn btn-sm my-btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ type.id }}"><i class="fa fa-trash"></i></a> {% endcomment %}
-                                            {% endif %}
+                                            {% comment %} <a href="{% url "admin_ssu:bene_ssu:b_c_list" bene.id %}" class="btn btn-orange btn-sm"> <i class="fa fa-drivers-license"></i> Carnets</a> {% endcomment %}
                                         </td>
                                     </tr>
                                     {% endfor %}
@@ -184,7 +130,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">  
-            <p>¿Está seguro de eliminar este usuario?</p>
+            <p>¿Está seguro de eliminar este registro?</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-gray" data-bs-dismiss="modal">Cancelar</button>
@@ -198,6 +144,15 @@
 </div>
 {% endblock content %}
 {% block js %}
+<script>
+    $(document).ready(function() {
+        $('#deleteModal').on('show.bs.modal', function(e) {
+            var userId = $(e.relatedTarget).data('id');
+            var url = "{% url 'admin_ssu:bene_ssu:inst_delete' 1234567890 %}".replace('1234567890', userId);
+            $('#deleteForm').attr('action', url);
+        });
+    });
+</script>
 {% endblock js %}
 {% block css %}
 <style>
@@ -208,57 +163,6 @@
     }
     .search-div input {
         width: 15rem;
-    }
-    .bar-blue{
-        background-color: #0d6efd;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-    .btn-sq-success{
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        padding: 0.3rem 1rem;
-        color: white;
-        background-color: #03d31b;
-        
-        border: none;
-        text-align: center;
-        text-decoration: none;
-        font-size: 16px;
-        transition-duration: 0.4s;
-        cursor: pointer;
-    }
-    .btn-sq-success span{
-        font-size: 0.7rem;
-        font-weight: bold;
-    }
-    .badge-success{
-        color: white;
-        background-color: #03d31b;
-
-        font-size: 0.8rem;
-        {% comment %} font-weight: bold; {% endcomment %}
-
-        padding: 0.3rem 1rem;
-        margin: 0.4rem;
-        margin-left: 0.5rem;
-        margin-right: 0.5rem;
-        border-radius: 1rem;
-    }
-    #table_users tr{
-        font-size: 0.9rem;
-    }
-    #table_users tr th{
-        font-size: 0.9rem;
-        font-weight: 200;
-    }
-    .b-check{
-        color: #03d31b;
-        font-size: 1.4rem;
-        margin-right: 0.5rem;
     }
     @media (max-width: 767px) {
         .pagi-hidden{

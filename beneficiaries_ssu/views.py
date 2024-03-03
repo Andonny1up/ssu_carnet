@@ -9,7 +9,7 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from django.urls import reverse_lazy
-from .models import TypeBeneficiary , Beneficiary, Carnet
+from .models import  Institution, TypeBeneficiary, Beneficiary, Carnet
 
 from .forms import TypeBeneficiaryForm, BeneficiaryForm, CarnetForm, BeneficiarySearchForm
 from django import forms
@@ -84,6 +84,70 @@ class TypeBeneficiaryDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('admin_ssu:bene_ssu:type_b_list')
 
 
+# institution
+class InstitutionListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    model = Institution
+    template_name = 'beneficiaries_ssu/institutions/institution_list.html'
+    context_object_name = 'institutions'
+    paginate_by = 10
+    permission_required = 'beneficiaries_ssu.view_institution'
+    
+    def get_queryset(self):
+        queryset = Institution.objects.filter(deleted_at__isnull=True).order_by('-created_at')
+        search_query = self.request.GET.get('search', '')
+        if search_query:
+            queryset = queryset.filter(
+                Q(name__icontains=search_query)
+            )
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Instituciones'
+        context['search'] = self.request.GET.get('search', '')
+        return context
+
+
+class InstitutionCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    model = Institution
+    fields = ['name']
+    template_name = 'beneficiaries_ssu/institutions/institution_add_edit.html'
+    success_url = reverse_lazy('admin_ssu:bene_ssu:inst_list')
+    permission_required = 'beneficiaries_ssu.add_institution'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Crear Institución'
+        return context
+    
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super().form_valid(form)
+    
+    
+class InstitutionEditView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    model = Institution
+    fields = ['name']
+    template_name = 'beneficiaries_ssu/institutions/institution_add_edit.html'
+    success_url = reverse_lazy('admin_ssu:bene_ssu:inst_list')
+    permission_required = 'beneficiaries_ssu.change_institution'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Editar Institución'
+        return context
+    
+    def form_valid(self, form):
+        form.instance.updated_by = self.request.user
+        return super().form_valid(form)
+    
+
+class InstitutionDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    model = Institution
+    success_url = reverse_lazy('admin_ssu:bene_ssu:inst_list')
+    permission_required = 'beneficiaries_ssu.delete_institution'
+    
+    
 # beneficiary
 class BeneficiaryListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Beneficiary
